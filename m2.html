@@ -1,0 +1,2450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SkillSphere — AI Career Evolution Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root {
+  --primary: #0B3D91;
+  --accent: #2563EB;
+  --teal: #14B8A6;
+  --bg: #F8FAFC;
+  --dark: #060D1F;
+  --card-bg: #ffffff;
+  --text: #1E293B;
+  --muted: #64748B;
+  --border: #E2E8F0;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4 { font-family: 'Syne', sans-serif; }
+
+/* ── PAGES ── */
+.page { display: none; min-height: 100vh; }
+.page.active { display: block; }
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: rgba(6, 13, 31, 0.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(37,99,235,0.2);
+  padding: 0 2rem;
+  height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+
+.nav-logo {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.4rem; font-weight: 800;
+  color: white;
+  cursor: pointer;
+  display: flex; align-items: center; gap: 0.4rem;
+}
+
+.nav-logo span { color: var(--teal); }
+
+.nav-links {
+  display: flex; gap: 0; list-style: none;
+}
+
+.nav-links li a {
+  color: rgba(255,255,255,0.7);
+  text-decoration: none;
+  font-size: 0.82rem; font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.nav-links li a:hover, .nav-links li a.active {
+  color: white;
+  background: rgba(37,99,235,0.25);
+}
+
+.nav-cta {
+  background: var(--accent);
+  color: white !important;
+  padding: 0.5rem 1.2rem !important;
+  border-radius: 8px !important;
+}
+
+.nav-mobile-btn {
+  display: none;
+  background: none; border: none; cursor: pointer;
+  color: white; font-size: 1.5rem;
+}
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  background: var(--dark);
+  position: relative;
+  display: flex; align-items: center;
+  overflow: hidden;
+  padding: 6rem 2rem 4rem;
+}
+
+canvas#neural { position: absolute; inset: 0; opacity: 0.35; }
+
+.hero-content {
+  position: relative; z-index: 2;
+  max-width: 1200px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;
+}
+
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: rgba(37,99,235,0.2);
+  border: 1px solid rgba(37,99,235,0.4);
+  color: #93C5FD;
+  font-size: 0.78rem; font-weight: 600;
+  padding: 0.4rem 1rem; border-radius: 100px;
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.05em;
+  animation: fadeUp 0.6s ease both;
+}
+
+.hero-badge .dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--teal);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%,100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.4); }
+}
+
+.hero h1 {
+  font-size: clamp(2.2rem, 4vw, 3.4rem);
+  font-weight: 800;
+  color: white;
+  line-height: 1.15;
+  margin-bottom: 1.2rem;
+  animation: fadeUp 0.7s ease 0.1s both;
+}
+
+.hero h1 .highlight {
+  background: linear-gradient(135deg, #2563EB, #14B8A6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero p {
+  color: rgba(255,255,255,0.65);
+  font-size: 1.05rem; line-height: 1.7;
+  margin-bottom: 2rem;
+  animation: fadeUp 0.7s ease 0.2s both;
+}
+
+.hero-btns {
+  display: flex; gap: 1rem; flex-wrap: wrap;
+  animation: fadeUp 0.7s ease 0.3s both;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #2563EB, #1D4ED8);
+  color: white;
+  padding: 0.85rem 1.8rem;
+  border-radius: 10px; border: none;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem; font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s;
+  box-shadow: 0 4px 20px rgba(37,99,235,0.4);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(37,99,235,0.5);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: white;
+  padding: 0.85rem 1.8rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.25);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem; font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+
+.btn-secondary:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.4);
+}
+
+.hero-stats {
+  animation: fadeUp 0.7s ease 0.4s both;
+  display: flex; gap: 2rem; margin-top: 2.5rem;
+}
+
+.stat { text-align: left; }
+.stat-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.8rem; font-weight: 800;
+  color: var(--teal);
+}
+.stat-label {
+  font-size: 0.78rem; color: rgba(255,255,255,0.5);
+  margin-top: 0.1rem;
+}
+
+/* Hero visual side */
+.hero-visual {
+  position: relative;
+  animation: fadeUp 0.8s ease 0.3s both;
+}
+
+.entropy-card {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
+  padding: 1.5rem;
+  backdrop-filter: blur(12px);
+}
+
+.entropy-card h4 {
+  color: rgba(255,255,255,0.7);
+  font-size: 0.82rem; font-weight: 600; margin-bottom: 1.2rem;
+  letter-spacing: 0.08em; text-transform: uppercase;
+}
+
+.skill-bar-item { margin-bottom: 1rem; }
+.skill-bar-label {
+  display: flex; justify-content: space-between; align-items: center;
+  color: white; font-size: 0.82rem; margin-bottom: 0.35rem;
+}
+.skill-bar-track {
+  height: 6px; background: rgba(255,255,255,0.1); border-radius: 100px;
+  overflow: hidden;
+}
+.skill-bar-fill {
+  height: 100%; border-radius: 100px;
+  animation: barGrow 1.5s ease both;
+}
+@keyframes barGrow {
+  from { width: 0; }
+}
+.bar-stable { background: linear-gradient(90deg, #14B8A6, #06B6D4); }
+.bar-monitor { background: linear-gradient(90deg, #F59E0B, #FBBF24); }
+.bar-risk { background: linear-gradient(90deg, #EF4444, #F97316); }
+
+.entropy-tag {
+  display: inline-block;
+  font-size: 0.68rem; font-weight: 700;
+  padding: 0.2rem 0.5rem; border-radius: 4px;
+  letter-spacing: 0.04em;
+}
+.tag-stable { background: rgba(20,184,166,0.2); color: #14B8A6; }
+.tag-monitor { background: rgba(245,158,11,0.2); color: #F59E0B; }
+.tag-risk { background: rgba(239,68,68,0.2); color: #EF4444; }
+
+/* ── SECTIONS ── */
+section { padding: 5rem 2rem; }
+.section-inner { max-width: 1200px; margin: 0 auto; }
+
+.section-tag {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  font-size: 0.75rem; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.8rem;
+}
+
+.section-title {
+  font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+  font-weight: 800; line-height: 1.2;
+  margin-bottom: 1rem;
+  color: var(--text);
+}
+
+.section-subtitle {
+  font-size: 1.05rem; color: var(--muted);
+  line-height: 1.7; max-width: 600px;
+}
+
+/* ── PROBLEM CARDS ── */
+.problem-section { background: var(--dark); }
+.problem-section .section-title { color: white; }
+.problem-section .section-subtitle { color: rgba(255,255,255,0.5); }
+
+.cards-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem; margin-top: 3rem;
+}
+
+.problem-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px; padding: 2rem;
+  position: relative; overflow: hidden;
+  transition: all 0.35s;
+  cursor: default;
+}
+
+.problem-card::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(37,99,235,0.08), transparent);
+  opacity: 0; transition: opacity 0.35s;
+}
+
+.problem-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(37,99,235,0.4);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+
+.problem-card:hover::before { opacity: 1; }
+
+.card-icon {
+  width: 52px; height: 52px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem; margin-bottom: 1.2rem;
+}
+
+.icon-blue { background: rgba(37,99,235,0.2); }
+.icon-teal { background: rgba(20,184,166,0.2); }
+.icon-amber { background: rgba(245,158,11,0.2); }
+.icon-red { background: rgba(239,68,68,0.2); }
+
+.problem-card h3 {
+  color: white; font-size: 1.1rem; font-weight: 700;
+  margin-bottom: 0.6rem;
+}
+
+.problem-card p {
+  color: rgba(255,255,255,0.5); font-size: 0.87rem; line-height: 1.6;
+}
+
+.card-stat {
+  margin-top: 1.2rem;
+  font-family: 'Syne', sans-serif;
+  font-size: 1.6rem; font-weight: 800;
+  background: linear-gradient(135deg, #2563EB, #14B8A6);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── VALUE SECTION ── */
+.value-section { background: var(--bg); }
+
+.value-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2rem; margin-top: 3rem;
+}
+
+.value-block {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 20px; padding: 2.5rem;
+  transition: all 0.3s;
+  position: relative; overflow: hidden;
+}
+
+.value-block::after {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 4px;
+  background: linear-gradient(90deg, var(--accent), var(--teal));
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.35s;
+}
+
+.value-block:hover { box-shadow: 0 16px 40px rgba(0,0,0,0.08); transform: translateY(-4px); }
+.value-block:hover::after { transform: scaleX(1); }
+
+.vb-icon { font-size: 2.4rem; margin-bottom: 1rem; }
+.vb-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.6rem; }
+.vb-desc { color: var(--muted); font-size: 0.88rem; line-height: 1.6; margin-bottom: 1.2rem; }
+
+.feature-list { list-style: none; }
+.feature-list li {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-size: 0.85rem; color: var(--text);
+  padding: 0.3rem 0;
+}
+.feature-list li::before {
+  content: '✓'; color: var(--teal);
+  font-weight: 700; font-size: 0.8rem;
+}
+
+/* ── INCLUSIVITY ── */
+.inclusivity-section {
+  background: linear-gradient(135deg, #0B3D91 0%, #0f172a 60%, #134e4a 100%);
+  position: relative; overflow: hidden;
+}
+
+.inclusivity-section::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at 80% 50%, rgba(20,184,166,0.15), transparent 60%);
+}
+
+.inclusivity-section .section-title { color: white; }
+.inclusivity-section .section-subtitle { color: rgba(255,255,255,0.6); }
+
+.inclusivity-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 3rem;
+  position: relative; z-index: 1;
+}
+
+.incl-card {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 16px; padding: 2rem;
+  transition: all 0.3s;
+}
+
+.incl-card:hover {
+  background: rgba(255,255,255,0.1);
+  transform: translateY(-4px);
+}
+
+.incl-card h3 { color: white; font-size: 1.1rem; margin-bottom: 0.6rem; }
+.incl-card p { color: rgba(255,255,255,0.55); font-size: 0.87rem; line-height: 1.6; }
+
+.incl-icon { font-size: 2rem; margin-bottom: 0.8rem; }
+
+/* ── WIZARD ── */
+.wizard-section { background: var(--bg); padding: 6rem 2rem; }
+
+.wizard-container {
+  max-width: 760px; margin: 0 auto;
+}
+
+.wizard-header { text-align: center; margin-bottom: 2.5rem; }
+
+.progress-bar-wrap {
+  display: flex; gap: 0; margin-bottom: 2.5rem;
+  background: var(--border); border-radius: 100px; overflow: hidden;
+  height: 6px;
+}
+
+.progress-fill {
+  background: linear-gradient(90deg, var(--accent), var(--teal));
+  height: 100%; border-radius: 100px;
+  transition: width 0.5s ease;
+}
+
+.step-indicators {
+  display: flex; justify-content: space-between;
+  margin-bottom: 2rem;
+}
+
+.step-dot {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-size: 0.82rem; font-weight: 600; color: var(--muted);
+}
+
+.step-dot .dot {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.75rem; font-weight: 700; color: var(--muted);
+  transition: all 0.3s;
+}
+
+.step-dot.active .dot {
+  background: var(--accent); color: white;
+}
+.step-dot.done .dot {
+  background: var(--teal); color: white;
+}
+
+.wizard-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 20px; padding: 2.5rem;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+}
+
+.wizard-step { display: none; }
+.wizard-step.active { display: block; animation: fadeUp 0.4s ease; }
+
+.step-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.3rem; font-weight: 700; margin-bottom: 0.3rem;
+}
+
+.step-subtitle { color: var(--muted); font-size: 0.88rem; margin-bottom: 2rem; }
+
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+.form-grid.full { grid-template-columns: 1fr; }
+
+.form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+.form-group label {
+  font-size: 0.82rem; font-weight: 600; color: var(--text);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  padding: 0.7rem 1rem;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.88rem;
+  color: var(--text);
+  transition: border-color 0.2s;
+  outline: none;
+  background: var(--bg);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+}
+
+.form-group textarea { resize: vertical; min-height: 100px; }
+
+.wizard-nav {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: 2rem;
+}
+
+.btn-ghost {
+  background: none; border: 1.5px solid var(--border);
+  color: var(--muted); padding: 0.7rem 1.5rem;
+  border-radius: 10px; font-family: 'DM Sans', sans-serif;
+  font-size: 0.88rem; font-weight: 600; cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+.btn-accent {
+  background: linear-gradient(135deg, #2563EB, #1D4ED8);
+  color: white; padding: 0.7rem 1.8rem;
+  border-radius: 10px; border: none;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.88rem; font-weight: 600; cursor: pointer;
+  transition: all 0.25s;
+  box-shadow: 0 4px 16px rgba(37,99,235,0.3);
+}
+.btn-accent:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(37,99,235,0.4); }
+
+.accessibility-options {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.8rem;
+}
+
+.acc-option {
+  display: flex; align-items: center; gap: 0.7rem;
+  padding: 0.8rem 1rem;
+  border: 1.5px solid var(--border); border-radius: 10px;
+  cursor: pointer; transition: all 0.2s;
+  font-size: 0.85rem;
+}
+.acc-option input { accent-color: var(--accent); }
+.acc-option:hover { border-color: var(--accent); background: rgba(37,99,235,0.04); }
+
+.toggle-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1rem;
+  border: 1.5px solid var(--border); border-radius: 10px;
+  margin-bottom: 0.8rem;
+}
+.toggle-label { font-size: 0.88rem; font-weight: 500; }
+.toggle-sub { font-size: 0.76rem; color: var(--muted); }
+
+.toggle {
+  width: 42px; height: 22px;
+  background: var(--border); border-radius: 100px;
+  position: relative; cursor: pointer; transition: background 0.2s;
+}
+.toggle.on { background: var(--accent); }
+.toggle::after {
+  content: ''; position: absolute;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: white; top: 3px; left: 3px;
+  transition: left 0.2s;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+.toggle.on::after { left: 23px; }
+
+/* ── DASHBOARD ── */
+.dashboard-page { background: var(--bg); padding-top: 64px; }
+
+.dashboard-header {
+  background: var(--dark);
+  padding: 2rem;
+  color: white;
+}
+
+.dash-header-inner {
+  max-width: 1200px; margin: 0 auto;
+  display: flex; justify-content: space-between; align-items: center;
+}
+
+.dash-greeting h2 { font-size: 1.5rem; font-weight: 700; }
+.dash-greeting p { color: rgba(255,255,255,0.5); font-size: 0.88rem; }
+
+.dash-score {
+  text-align: center;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px; padding: 1rem 2rem;
+}
+.dash-score .score-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 2rem; font-weight: 800; color: var(--teal);
+}
+.dash-score .score-label { font-size: 0.75rem; color: rgba(255,255,255,0.5); }
+
+.dashboard-body {
+  max-width: 1200px; margin: 2rem auto; padding: 0 2rem;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;
+}
+
+.dash-panel {
+  background: white; border: 1px solid var(--border);
+  border-radius: 16px; padding: 1.5rem;
+}
+
+.dash-panel-full { grid-column: 1 / -1; }
+
+.panel-title {
+  font-size: 1rem; font-weight: 700; margin-bottom: 0.3rem;
+  display: flex; align-items: center; gap: 0.5rem;
+}
+
+.panel-subtitle { font-size: 0.8rem; color: var(--muted); margin-bottom: 1.5rem; }
+
+/* Skill badges */
+.skill-badges { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.skill-badge {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  padding: 0.3rem 0.8rem; border-radius: 100px;
+  font-size: 0.78rem; font-weight: 600;
+}
+.badge-blue { background: rgba(37,99,235,0.1); color: var(--accent); }
+.badge-teal { background: rgba(20,184,166,0.1); color: var(--teal); }
+.badge-amber { background: rgba(245,158,11,0.1); color: #D97706; }
+
+/* Entropy meters */
+.entropy-meter { margin-bottom: 1rem; }
+.em-label {
+  display: flex; justify-content: space-between;
+  font-size: 0.82rem; margin-bottom: 0.4rem;
+  font-weight: 500;
+}
+.em-track {
+  height: 8px; background: var(--bg); border-radius: 100px; overflow: hidden;
+}
+.em-fill {
+  height: 100%; border-radius: 100px;
+  transition: width 1.2s ease;
+}
+
+/* Forecast cards */
+.forecast-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;
+}
+
+.forecast-card {
+  background: var(--bg); border-radius: 12px; padding: 1rem;
+  border: 1px solid var(--border); transition: all 0.2s;
+}
+.forecast-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+
+.fc-icon { font-size: 1.4rem; margin-bottom: 0.5rem; }
+.fc-title { font-size: 0.85rem; font-weight: 700; margin-bottom: 0.3rem; }
+.fc-desc { font-size: 0.78rem; color: var(--muted); }
+.fc-tag {
+  display: inline-block; margin-top: 0.5rem;
+  font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+}
+
+/* Map placeholder */
+.map-placeholder {
+  background: linear-gradient(135deg, #e8f0fe, #f0fdf4);
+  border-radius: 12px; padding: 3rem;
+  text-align: center; border: 2px dashed var(--border);
+  position: relative; overflow: hidden;
+}
+
+.map-pins {
+  display: flex; justify-content: center; gap: 1rem; margin-bottom: 1rem;
+}
+
+.map-pin {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: var(--accent);
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-size: 1.1rem;
+  box-shadow: 0 4px 12px rgba(37,99,235,0.3);
+  animation: pinBounce 2s ease infinite;
+}
+
+.map-pin:nth-child(2) { animation-delay: 0.3s; background: var(--teal); }
+.map-pin:nth-child(3) { animation-delay: 0.6s; }
+
+@keyframes pinBounce {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.counselor-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; }
+
+.counselor-card {
+  background: var(--bg); border-radius: 10px; padding: 1rem;
+  border: 1px solid var(--border); display: flex; gap: 0.8rem;
+}
+
+.counselor-avatar {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: linear-gradient(135deg, #2563EB, #14B8A6);
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-weight: 700; font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.counselor-info h4 { font-size: 0.85rem; font-weight: 700; }
+.counselor-info p { font-size: 0.75rem; color: var(--muted); }
+.counselor-info .dist { font-size: 0.72rem; color: var(--teal); font-weight: 600; margin-top: 0.2rem; }
+
+.btn-xs {
+  font-size: 0.72rem; padding: 0.3rem 0.7rem;
+  border-radius: 6px; border: none; cursor: pointer;
+  font-family: 'DM Sans', sans-serif; font-weight: 600;
+  margin-top: 0.5rem; margin-right: 0.3rem;
+  transition: all 0.2s;
+}
+.btn-xs-primary { background: var(--accent); color: white; }
+.btn-xs-ghost { background: var(--border); color: var(--text); }
+
+/* Scholarship cards */
+.scholarship-list { display: flex; flex-direction: column; gap: 1rem; }
+
+.scholarship-card {
+  background: var(--bg); border-radius: 12px; padding: 1.2rem;
+  border: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: flex-start;
+}
+
+.sc-info h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: 0.3rem; }
+.sc-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+.sc-tag {
+  font-size: 0.68rem; padding: 0.2rem 0.5rem;
+  border-radius: 4px; font-weight: 600;
+}
+
+.sc-apply {
+  background: linear-gradient(135deg, #2563EB, #1D4ED8);
+  color: white; border: none; padding: 0.5rem 1rem;
+  border-radius: 8px; font-size: 0.78rem; font-weight: 600;
+  cursor: pointer; white-space: nowrap; transition: all 0.2s;
+  font-family: 'DM Sans', sans-serif;
+}
+.sc-apply:hover { transform: translateY(-1px); }
+
+/* Chart container */
+.chart-wrap { position: relative; height: 200px; }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in { animation: fadeUp 0.6s ease both; }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--dark); color: rgba(255,255,255,0.5);
+  text-align: center; padding: 2rem;
+  font-size: 0.82rem;
+}
+
+footer span { color: var(--teal); font-weight: 600; }
+
+/* ── AUTH MODAL ── */
+.auth-overlay {
+  position: fixed; inset: 0; z-index: 2000;
+  background: rgba(6,13,31,0.75);
+  backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s;
+  padding: 1rem;
+}
+.auth-overlay.open { opacity: 1; pointer-events: all; }
+
+.auth-modal {
+  background: white; border-radius: 24px;
+  width: 100%; max-width: 460px;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.25);
+  overflow: hidden;
+  transform: translateY(20px) scale(0.97);
+  transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  position: relative;
+}
+.auth-overlay.open .auth-modal { transform: translateY(0) scale(1); }
+
+.auth-modal-close {
+  position: absolute; top: 1rem; right: 1rem;
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--bg); border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; color: var(--muted);
+  transition: all 0.2s; z-index: 10;
+}
+.auth-modal-close:hover { background: var(--border); color: var(--text); }
+
+.auth-modal-header {
+  background: linear-gradient(135deg, #060D1F, #0B3D91);
+  padding: 2.5rem 2.5rem 2rem;
+  position: relative; overflow: hidden;
+}
+.auth-modal-header::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at 80% 30%, rgba(20,184,166,0.2), transparent 60%);
+}
+
+.auth-logo {
+  font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 800;
+  color: white; margin-bottom: 1.2rem; position: relative;
+}
+.auth-logo span { color: var(--teal); }
+
+.auth-tabs {
+  display: flex; gap: 0; background: rgba(255,255,255,0.08);
+  border-radius: 10px; padding: 4px;
+  position: relative;
+}
+.auth-tab {
+  flex: 1; padding: 0.55rem 1rem;
+  border: none; background: none; cursor: pointer;
+  color: rgba(255,255,255,0.6);
+  font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 600;
+  border-radius: 8px; transition: all 0.25s;
+  position: relative; z-index: 1;
+}
+.auth-tab.active {
+  background: white; color: var(--text);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.auth-modal-body { padding: 2rem 2.5rem 2.5rem; }
+
+.auth-panel { display: none; animation: fadeUp 0.35s ease; }
+.auth-panel.active { display: block; }
+
+.auth-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.3rem; }
+.auth-subtitle { font-size: 0.83rem; color: var(--muted); margin-bottom: 1.6rem; }
+
+.auth-form { display: flex; flex-direction: column; gap: 1rem; }
+
+.auth-input-wrap { position: relative; }
+.auth-input-wrap .input-icon {
+  position: absolute; left: 0.9rem; top: 50%; transform: translateY(-50%);
+  font-size: 1rem; pointer-events: none;
+}
+.auth-input-wrap input {
+  width: 100%; padding: 0.78rem 1rem 0.78rem 2.6rem;
+  border: 1.5px solid var(--border); border-radius: 10px;
+  font-family: 'DM Sans', sans-serif; font-size: 0.88rem;
+  color: var(--text); background: var(--bg); outline: none;
+  transition: all 0.2s;
+}
+.auth-input-wrap input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+  background: white;
+}
+
+.auth-row {
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 0.82rem;
+}
+.auth-remember { display: flex; align-items: center; gap: 0.4rem; cursor: pointer; }
+.auth-remember input { accent-color: var(--accent); }
+.auth-forgot { color: var(--accent); font-weight: 600; cursor: pointer; text-decoration: none; }
+.auth-forgot:hover { text-decoration: underline; }
+
+.auth-submit {
+  width: 100%;
+  background: linear-gradient(135deg, #2563EB, #1D4ED8);
+  color: white; border: none; padding: 0.85rem;
+  border-radius: 10px; font-family: 'DM Sans', sans-serif;
+  font-size: 0.92rem; font-weight: 700; cursor: pointer;
+  transition: all 0.25s;
+  box-shadow: 0 4px 16px rgba(37,99,235,0.35);
+  margin-top: 0.2rem;
+}
+.auth-submit:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(37,99,235,0.45); }
+
+.auth-divider {
+  display: flex; align-items: center; gap: 0.8rem;
+  margin: 0.6rem 0;
+  color: var(--muted); font-size: 0.78rem;
+}
+.auth-divider::before, .auth-divider::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
+}
+
+.social-btns { display: flex; gap: 0.8rem; }
+.social-btn {
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+  padding: 0.65rem; border: 1.5px solid var(--border); border-radius: 10px;
+  background: white; cursor: pointer; font-family: 'DM Sans', sans-serif;
+  font-size: 0.82rem; font-weight: 600; color: var(--text);
+  transition: all 0.2s;
+}
+.social-btn:hover { border-color: var(--accent); background: rgba(37,99,235,0.04); }
+.social-icon { font-size: 1.1rem; }
+
+.auth-switch {
+  text-align: center; margin-top: 1.2rem;
+  font-size: 0.82rem; color: var(--muted);
+}
+.auth-switch a {
+  color: var(--accent); font-weight: 700; cursor: pointer;
+  text-decoration: none;
+}
+.auth-switch a:hover { text-decoration: underline; }
+
+.auth-terms {
+  font-size: 0.76rem; color: var(--muted); text-align: center;
+  margin-top: 0.5rem; line-height: 1.5;
+}
+.auth-terms a { color: var(--accent); cursor: pointer; }
+
+/* Password strength */
+.pw-strength { margin-top: 0.3rem; }
+.pw-bar {
+  height: 3px; border-radius: 100px;
+  background: var(--border); overflow: hidden; margin-bottom: 0.25rem;
+}
+.pw-fill {
+  height: 100%; border-radius: 100px; width: 0%;
+  transition: width 0.3s, background 0.3s;
+}
+.pw-label { font-size: 0.72rem; color: var(--muted); }
+
+/* Show password toggle */
+.pw-toggle {
+  position: absolute; right: 0.9rem; top: 50%; transform: translateY(-50%);
+  background: none; border: none; cursor: pointer;
+  color: var(--muted); font-size: 0.9rem; padding: 0;
+}
+
+/* Toast notification */
+.toast {
+  position: fixed; bottom: 2rem; right: 2rem; z-index: 3000;
+  background: var(--dark); color: white;
+  padding: 1rem 1.5rem; border-radius: 12px;
+  font-size: 0.88rem; font-weight: 500;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+  display: flex; align-items: center; gap: 0.6rem;
+  transform: translateY(100px); opacity: 0;
+  transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  max-width: 320px;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+.toast-icon { font-size: 1.2rem; }
+
+/* Nav user area */
+.nav-user {
+  display: flex; align-items: center; gap: 0.8rem;
+}
+.nav-user-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: linear-gradient(135deg, #2563EB, #14B8A6);
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-weight: 700; font-size: 0.75rem;
+  cursor: pointer;
+}
+.nav-user-name { color: rgba(255,255,255,0.8); font-size: 0.82rem; font-weight: 500; }
+.nav-signout {
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.6); font-size: 0.75rem; padding: 0.3rem 0.7rem;
+  border-radius: 6px; cursor: pointer; font-family: 'DM Sans', sans-serif;
+  transition: all 0.2s;
+}
+.nav-signout:hover { background: rgba(255,0,0,0.15); color: #FCA5A5; border-color: rgba(239,68,68,0.3); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  .hero-content { grid-template-columns: 1fr; }
+  .hero-visual { display: none; }
+  .form-grid { grid-template-columns: 1fr; }
+  .inclusivity-grid { grid-template-columns: 1fr; }
+  .dashboard-body { grid-template-columns: 1fr; }
+  .forecast-grid { grid-template-columns: 1fr 1fr; }
+  .counselor-cards { grid-template-columns: 1fr; }
+  .nav-links { display: none; }
+  .nav-mobile-btn { display: block; }
+  .hero-stats { gap: 1.2rem; }
+  .step-indicators { display: none; }
+  .value-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+  .forecast-grid { grid-template-columns: 1fr; }
+  .hero h1 { font-size: 2rem; }
+  .hero-btns { flex-direction: column; }
+  .btn-primary, .btn-secondary { width: 100%; text-align: center; }
+  .accessibility-options { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav>
+  <div class="nav-logo" onclick="showPage('home')">Skill<span>Sphere</span></div>
+  <ul class="nav-links" id="nav-links-main">
+    <li><a onclick="showPage('home')" class="active" id="nav-home">Home</a></li>
+    <li><a onclick="showPage('wizard')" id="nav-wizard">Check Suitability</a></li>
+    <li><a href="#career-lib" id="nav-careers">Career Library</a></li>
+    <li><a onclick="showPage('dashboard')" id="nav-dashboard">Student Dashboard</a></li>
+    <li><a href="#" id="nav-india">India Admissions</a></li>
+    <li><a onclick="openAuth('signin')" id="nav-signin" style="color:rgba(255,255,255,0.7)">Sign In</a></li>
+    <li><a onclick="openAuth('signup')" class="nav-cta">Get Started →</a></li>
+  </ul>
+  <!-- Logged-in user area (hidden by default) -->
+  <div class="nav-user" id="nav-user-area" style="display:none;">
+    <div class="nav-user-avatar" id="nav-avatar" onclick="showPage('dashboard')">P</div>
+    <span class="nav-user-name" id="nav-username">Priya</span>
+    <button class="nav-signout" onclick="signOut()">Sign Out</button>
+  </div>
+  <button class="nav-mobile-btn" onclick="openAuth('signin')">☰</button>
+</nav>
+
+<!-- ══════════════════════════════════════════════════════
+     PAGE: HOME
+══════════════════════════════════════════════════════ -->
+<div id="page-home" class="page active">
+
+  <!-- HERO -->
+  <section class="hero" style="padding-top: 80px;">
+    <canvas id="neural"></canvas>
+    <div class="hero-content">
+      <div class="hero-left">
+        <div class="hero-badge">
+          <span class="dot"></span>
+          AI-Powered Career Intelligence Platform
+        </div>
+        <h1>
+          Comprehensive<br>
+          <span class="highlight">AI-Driven Career</span><br>
+          Evolution Platform
+        </h1>
+        <p>
+          Neutralizing the Skills Half-Life Crisis through Predictive Intelligence & Inclusive Career Mapping. Stay ahead of professional obsolescence with real-time entropy monitoring.
+        </p>
+        <div class="hero-btns">
+          <button class="btn-primary" onclick="showPage('wizard')">🎓 Assessment for Students</button>
+          <button class="btn-secondary" onclick="showPage('wizard')">💼 Assessment for Professionals</button>
+        </div>
+        <div class="hero-stats">
+          <div class="stat">
+            <div class="stat-num">87%</div>
+            <div class="stat-label">Skills Obsolescence Rate by 2030</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num">2.5yr</div>
+            <div class="stat-label">Average Tech Skill Half-Life</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num">4.2M+</div>
+            <div class="stat-label">Professionals at Risk Annually</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hero Visual -->
+      <div class="hero-visual">
+        <div class="entropy-card">
+          <h4>Live Skill Entropy Monitor</h4>
+
+          <div class="skill-bar-item">
+            <div class="skill-bar-label">
+              <span>Machine Learning</span>
+              <span class="entropy-tag tag-stable">Stable</span>
+            </div>
+            <div class="skill-bar-track">
+              <div class="skill-bar-fill bar-stable" style="width:82%"></div>
+            </div>
+          </div>
+
+          <div class="skill-bar-item">
+            <div class="skill-bar-label">
+              <span>Cloud Architecture</span>
+              <span class="entropy-tag tag-stable">Stable</span>
+            </div>
+            <div class="skill-bar-track">
+              <div class="skill-bar-fill bar-stable" style="width:74%"></div>
+            </div>
+          </div>
+
+          <div class="skill-bar-item">
+            <div class="skill-bar-label">
+              <span>Manual QA Testing</span>
+              <span class="entropy-tag tag-monitor">Monitor</span>
+            </div>
+            <div class="skill-bar-track">
+              <div class="skill-bar-fill bar-monitor" style="width:48%"></div>
+            </div>
+          </div>
+
+          <div class="skill-bar-item">
+            <div class="skill-bar-label">
+              <span>Legacy COBOL</span>
+              <span class="entropy-tag tag-risk">At Risk</span>
+            </div>
+            <div class="skill-bar-track">
+              <div class="skill-bar-fill bar-risk" style="width:22%"></div>
+            </div>
+          </div>
+
+          <div style="border-top: 1px solid rgba(255,255,255,0.08); margin-top: 1.2rem; padding-top: 1rem;">
+            <div style="display:flex; gap:1rem; justify-content:space-between;">
+              <div style="text-align:center;">
+                <div style="color:#14B8A6; font-family:'Syne',sans-serif; font-size:1.3rem; font-weight:800;">68</div>
+                <div style="color:rgba(255,255,255,0.4); font-size:0.72rem;">Career Score</div>
+              </div>
+              <div style="text-align:center;">
+                <div style="color:#F59E0B; font-family:'Syne',sans-serif; font-size:1.3rem; font-weight:800;">4</div>
+                <div style="color:rgba(255,255,255,0.4); font-size:0.72rem;">Pivot Paths</div>
+              </div>
+              <div style="text-align:center;">
+                <div style="color:#2563EB; font-family:'Syne',sans-serif; font-size:1.3rem; font-weight:800;">12</div>
+                <div style="color:rgba(255,255,255,0.4); font-size:0.72rem;">Scholarships</div>
+              </div>
+            </div>
+          </div>
+
+          <button class="btn-primary" style="width:100%;margin-top:1.2rem;padding:0.7rem;" onclick="showPage('wizard')">
+            Generate My Career Report →
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROBLEM SECTION -->
+  <section class="problem-section">
+    <div class="section-inner">
+      <div class="section-tag">⚠️ The Crisis</div>
+      <h2 class="section-title" style="color:white;">The Professional<br>Obsolescence Crisis</h2>
+      <p class="section-subtitle">The future of work is here — and most professionals are unprepared. Our platform identifies the cracks before careers collapse.</p>
+
+      <div class="cards-grid">
+        <div class="problem-card">
+          <div class="card-icon icon-amber">⏱️</div>
+          <h3>Skills Half-Life Trap</h3>
+          <p>AI evolution compresses the relevance window of professional skills. What took decades to master now becomes obsolete in under 3 years.</p>
+          <div class="card-stat">2.5 yrs</div>
+          <div style="font-size:0.75rem; color:rgba(255,255,255,0.35); margin-top:0.2rem;">Average tech skill half-life</div>
+        </div>
+
+        <div class="problem-card">
+          <div class="card-icon icon-red">📉</div>
+          <h3>Invisible Skill Decay</h3>
+          <p>Professionals have zero visibility into how their skills are depreciating in market value — until it's too late to pivot or retrain effectively.</p>
+          <div class="card-stat">91%</div>
+          <div style="font-size:0.75rem; color:rgba(255,255,255,0.35); margin-top:0.2rem;">Unaware of their decay rate</div>
+        </div>
+
+        <div class="problem-card">
+          <div class="card-icon icon-teal">♿</div>
+          <h3>Inclusion Gap</h3>
+          <p>Specially-abled professionals face double jeopardy — standard career pathways ignore adaptive work environments and unique capability profiles.</p>
+          <div class="card-stat">340M+</div>
+          <div style="font-size:0.75rem; color:rgba(255,255,255,0.35); margin-top:0.2rem;">Professionals underserved globally</div>
+        </div>
+
+        <div class="problem-card">
+          <div class="card-icon icon-blue">🔮</div>
+          <h3>Reactive Stagnation</h3>
+          <p>Career counseling reacts to crises instead of forecasting them. No predictive engine exists for adjacent career transitions before disruption hits.</p>
+          <div class="card-stat">78%</div>
+          <div style="font-size:0.75rem; color:rgba(255,255,255,0.35); margin-top:0.2rem;">Career pivots are forced not planned</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CORE VALUE -->
+  <section class="value-section" id="career-lib">
+    <div class="section-inner">
+      <div class="section-tag">💡 Our Solution</div>
+      <h2 class="section-title">Our Core Value Proposition</h2>
+      <p class="section-subtitle">Three pillars that transform reactive career counseling into predictive career engineering.</p>
+
+      <div class="value-grid">
+        <div class="value-block">
+          <div class="vb-icon">🌐</div>
+          <div class="vb-title">Global-Local Integration</div>
+          <div class="vb-desc">Bridge international opportunity with local mentorship through our dual-track intelligence system — AI-powered global insights meets human-driven local wisdom.</div>
+          <ul class="feature-list">
+            <li>Abroad visa & education pathway module</li>
+            <li>Local counselor human mentorship system</li>
+            <li>Country-specific career demand forecasting</li>
+            <li>Cultural fit assessment engine</li>
+          </ul>
+        </div>
+
+        <div class="value-block">
+          <div class="vb-icon">🧭</div>
+          <div class="vb-title">Predictive Pivot Roadmaps</div>
+          <div class="vb-desc">Our entropy engine forecasts skill decay 12–36 months ahead and generates personalized adjacent career transition paths before disruption forces a crisis pivot.</div>
+          <ul class="feature-list">
+            <li>Adjacent career mapping via AI clustering</li>
+            <li>Skill transition forecasting (12–36 months)</li>
+            <li>Real-time job market signal integration</li>
+            <li>Personalized reskilling timeline</li>
+          </ul>
+        </div>
+
+        <div class="value-block">
+          <div class="vb-icon">🤝</div>
+          <div class="vb-title">Social Intelligence Engine</div>
+          <div class="vb-desc">Harness the collective intelligence of professional networks. Sync career data, extract trending insights, and benchmark against community trajectories in real time.</div>
+          <ul class="feature-list">
+            <li>LinkedIn profile data synchronization</li>
+            <li>Quora community-driven insight integration</li>
+            <li>Peer career trajectory benchmarking</li>
+            <li>Industry sentiment analysis</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INCLUSIVITY -->
+  <section class="inclusivity-section">
+    <div class="section-inner">
+      <div class="section-tag" style="color:#5EEAD4;">♿ Inclusivity</div>
+      <h2 class="section-title">Inclusivity & Economic<br>Leveling Engine</h2>
+      <p class="section-subtitle">Career evolution should not be a privilege. We build pathways that include everyone — regardless of ability, geography, or economic standing.</p>
+
+      <div class="inclusivity-grid">
+        <div class="incl-card">
+          <div class="incl-icon">🦽</div>
+          <h3>Adaptive Pathway Mapping</h3>
+          <p>Specialized career roadmaps built for specially-abled professionals — accounting for physical capabilities, assistive technologies, and remote/hybrid work optimization.</p>
+        </div>
+
+        <div class="incl-card">
+          <div class="incl-icon">🏢</div>
+          <h3>Adaptive Work Environment Matching</h3>
+          <p>Our AI matches professionals with employers whose infrastructure, culture, and role specifications accommodate diverse accessibility needs — without compromise.</p>
+        </div>
+
+        <div class="incl-card">
+          <div class="incl-icon">⚙️</div>
+          <h3>Accessibility Preference Settings</h3>
+          <p>Granular accessibility configuration: screen reader optimization, motor impairment accommodations, cognitive load settings, and communication style preferences built into every assessment.</p>
+        </div>
+
+        <div class="incl-card">
+          <div class="incl-icon">🎓</div>
+          <h3>Automated Scholarship Engine</h3>
+          <p>AI-powered scholarship matching across merit, need-based, and accessibility criteria — surfacing opportunities from 10,000+ global scholarship databases automatically matched to your profile.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section style="background: var(--bg); padding: 5rem 2rem; text-align:center;">
+    <div class="section-inner">
+      <div style="font-size:3rem; margin-bottom:1rem;">🚀</div>
+      <h2 class="section-title">Ready to Future-Proof Your Career?</h2>
+      <p class="section-subtitle" style="margin: 0.8rem auto 2rem;">Take our 4-step AI assessment and receive your personalized Career Evolution Report — including entropy scores, pivot roadmaps, and scholarship matches.</p>
+      <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+        <button class="btn-primary" style="font-size:1rem; padding:1rem 2.5rem;" onclick="showPage('wizard')">
+          Start Free Assessment →
+        </button>
+        <button class="btn-ghost" style="font-size:1rem; padding:1rem 2.5rem;" onclick="showPage('dashboard')">
+          View Sample Dashboard
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2025 <span>SkillSphere</span> — AI Career Evolution Platform | Built for Hackathon 2025 | Predictive Intelligence for the Modern Professional</p>
+  </footer>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     PAGE: WIZARD
+══════════════════════════════════════════════════════ -->
+<div id="page-wizard" class="page" style="padding-top: 64px; background: var(--bg);">
+  <div class="wizard-section" style="padding-top: 3rem;">
+    <div class="wizard-container">
+      <div class="wizard-header">
+        <div class="section-tag">📋 Assessment</div>
+        <h2 class="section-title">Career Intelligence Assessment</h2>
+        <p style="color:var(--muted); font-size:0.9rem;">Complete 4 steps to generate your personalized AI Career Evolution Report</p>
+      </div>
+
+      <!-- Progress -->
+      <div class="progress-bar-wrap">
+        <div class="progress-fill" id="wizard-progress" style="width:25%"></div>
+      </div>
+
+      <!-- Step indicators -->
+      <div class="step-indicators">
+        <div class="step-dot active" id="step-ind-1">
+          <div class="dot">1</div>
+          <span>Profile</span>
+        </div>
+        <div class="step-dot" id="step-ind-2">
+          <div class="dot">2</div>
+          <span>Experience</span>
+        </div>
+        <div class="step-dot" id="step-ind-3">
+          <div class="dot">3</div>
+          <span>Preferences</span>
+        </div>
+        <div class="step-dot" id="step-ind-4">
+          <div class="dot">4</div>
+          <span>Location</span>
+        </div>
+      </div>
+
+      <!-- Wizard Card -->
+      <div class="wizard-card">
+
+        <!-- STEP 1 -->
+        <div class="wizard-step active" id="wizard-step-1">
+          <div class="step-title">Basic Profile</div>
+          <div class="step-subtitle">Tell us who you are so we can personalize your career intelligence report</div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Full Name</label>
+              <input type="text" placeholder="e.g. Priya Sharma" id="f-name">
+            </div>
+            <div class="form-group">
+              <label>Age</label>
+              <input type="number" placeholder="e.g. 27" id="f-age" min="16" max="70">
+            </div>
+            <div class="form-group">
+              <label>Education Level</label>
+              <select id="f-edu">
+                <option value="">Select level...</option>
+                <option>High School</option>
+                <option>Diploma / Polytechnic</option>
+                <option>Bachelor's Degree</option>
+                <option>Master's Degree</option>
+                <option>PhD / Doctorate</option>
+                <option>Bootcamp / Self-Taught</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Current Role</label>
+              <input type="text" placeholder="e.g. Software Engineer" id="f-role">
+            </div>
+          </div>
+
+          <div class="wizard-nav">
+            <div></div>
+            <button class="btn-accent" onclick="nextStep(2)">Continue →</button>
+          </div>
+        </div>
+
+        <!-- STEP 2 -->
+        <div class="wizard-step" id="wizard-step-2">
+          <div class="step-title">Experience & Skills</div>
+          <div class="step-subtitle">Your background helps our AI extract skill patterns and detect entropy signals</div>
+
+          <div class="form-grid full">
+            <div class="form-group">
+              <label>Work History Summary</label>
+              <textarea placeholder="Describe your professional journey, roles, key achievements, and technologies used. The more detail, the better our AI can analyze skill entropy..." id="f-history"></textarea>
+            </div>
+            <div class="form-group">
+              <label>Current Skills (comma separated)</label>
+              <input type="text" placeholder="e.g. Python, TensorFlow, AWS, Product Management" id="f-skills">
+            </div>
+            <div class="form-group">
+              <label>Primary Career Goal</label>
+              <select id="f-goal">
+                <option value="">Select your goal...</option>
+                <option>Get promoted in current field</option>
+                <option>Switch to an adjacent career</option>
+                <option>Pivot to a completely new field</option>
+                <option>Start my own venture</option>
+                <option>Migrate abroad for better opportunities</option>
+                <option>Return to workforce after a break</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="wizard-nav">
+            <button class="btn-ghost" onclick="nextStep(1)">← Back</button>
+            <button class="btn-accent" onclick="nextStep(3)">Continue →</button>
+          </div>
+        </div>
+
+        <!-- STEP 3 -->
+        <div class="wizard-step" id="wizard-step-3">
+          <div class="step-title">Preferences & Accessibility</div>
+          <div class="step-subtitle">Help us match you to the most relevant scholarships, programs, and pathways</div>
+
+          <div class="form-grid" style="margin-bottom:1.5rem;">
+            <div class="form-group">
+              <label>Financial Status</label>
+              <select id="f-finance">
+                <option value="">Select...</option>
+                <option>Fully self-funded</option>
+                <option>Partially self-funded</option>
+                <option>Require financial aid</option>
+                <option>Require full scholarship</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Scholarship Requirement</label>
+              <select id="f-scholar">
+                <option value="">Select...</option>
+                <option>Not required</option>
+                <option>Merit-based scholarship</option>
+                <option>Need-based scholarship</option>
+                <option>Both merit & need-based</option>
+                <option>Specially-abled scholarship</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="toggle-row">
+            <div>
+              <div class="toggle-label">Willing to Study Abroad?</div>
+              <div class="toggle-sub">Unlocks global pathway recommendations</div>
+            </div>
+            <div class="toggle" id="toggle-abroad" onclick="this.classList.toggle('on')"></div>
+          </div>
+
+          <div style="margin: 1.2rem 0 0.6rem;">
+            <label style="font-size:0.82rem; font-weight:600;">Accessibility Requirements</label>
+            <div style="font-size:0.76rem; color:var(--muted); margin-bottom:0.8rem;">Select all that apply</div>
+          </div>
+
+          <div class="accessibility-options">
+            <label class="acc-option">
+              <input type="checkbox"> Visual Impairment Support
+            </label>
+            <label class="acc-option">
+              <input type="checkbox"> Motor Impairment Accommodation
+            </label>
+            <label class="acc-option">
+              <input type="checkbox"> Hearing Impairment Support
+            </label>
+            <label class="acc-option">
+              <input type="checkbox"> Cognitive Accessibility Settings
+            </label>
+            <label class="acc-option">
+              <input type="checkbox"> Speech / Communication Aids
+            </label>
+            <label class="acc-option">
+              <input type="checkbox"> No specific requirements
+            </label>
+          </div>
+
+          <div class="wizard-nav" style="margin-top:1.5rem;">
+            <button class="btn-ghost" onclick="nextStep(2)">← Back</button>
+            <button class="btn-accent" onclick="nextStep(4)">Continue →</button>
+          </div>
+        </div>
+
+        <!-- STEP 4 -->
+        <div class="wizard-step" id="wizard-step-4">
+          <div class="step-title">Location & Geospatial Matching</div>
+          <div class="step-subtitle">We use your location to match nearest career counselors and local opportunity clusters</div>
+
+          <div style="background:linear-gradient(135deg,rgba(37,99,235,0.06),rgba(20,184,166,0.06)); border-radius:12px; padding:2rem; text-align:center; border: 1.5px dashed var(--border); margin-bottom:1.5rem;">
+            <div style="font-size:2.5rem; margin-bottom:0.8rem;">📍</div>
+            <h3 style="margin-bottom:0.5rem; font-size:1rem;">Enable Location Access</h3>
+            <p style="color:var(--muted); font-size:0.85rem; margin-bottom:1.2rem;">Allow location permission to find nearest career counselors, local mentors, and geospatially-matched opportunities within your region.</p>
+            <button class="btn-accent" onclick="requestLocation()">📍 Allow Location Access</button>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label>City / District</label>
+              <input type="text" placeholder="e.g. Bangalore" id="f-city">
+            </div>
+            <div class="form-group">
+              <label>State / Province</label>
+              <input type="text" placeholder="e.g. Karnataka" id="f-state">
+            </div>
+            <div class="form-group">
+              <label>Country</label>
+              <select id="f-country">
+                <option>India</option>
+                <option>United States</option>
+                <option>United Kingdom</option>
+                <option>Canada</option>
+                <option>Australia</option>
+                <option>Germany</option>
+                <option>Singapore</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Preferred Counseling Mode</label>
+              <select id="f-mode">
+                <option>Online (Video Call)</option>
+                <option>In-Person</option>
+                <option>Both</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="background:rgba(20,184,166,0.08); border:1px solid rgba(20,184,166,0.2); border-radius:10px; padding:1rem; margin-top:1rem;">
+            <p style="font-size:0.8rem; color:var(--teal); font-weight:600;">🔒 Privacy Promise</p>
+            <p style="font-size:0.78rem; color:var(--muted); margin-top:0.2rem;">Your location data is used only for career matching. We never share precise coordinates. See our Privacy Policy.</p>
+          </div>
+
+          <div class="wizard-nav">
+            <button class="btn-ghost" onclick="nextStep(3)">← Back</button>
+            <button class="btn-accent" onclick="submitAssessment()">🚀 Generate My Career Report</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Processing State -->
+      <div id="wizard-processing" style="display:none; text-align:center; padding:3rem;">
+        <div id="processing-spinner" style="font-size:3rem; animation: spin 1s linear infinite; display:inline-block;">⚙️</div>
+        <h3 style="margin:1rem 0 0.5rem; font-family:'Syne',sans-serif;">Analyzing Your Profile...</h3>
+        <p style="color:var(--muted); font-size:0.88rem;">Our AI is running skill entropy analysis, career clustering, and scholarship matching. This takes about 3 seconds.</p>
+        <div style="margin-top:1.5rem; height:4px; background:var(--border); border-radius:100px; overflow:hidden;">
+          <div id="loading-bar" style="height:100%; background:linear-gradient(90deg,#2563EB,#14B8A6); width:0%; border-radius:100px; transition:width 2.5s ease;"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <footer>
+    <p>© 2025 <span>SkillSphere</span> — AI Career Evolution Platform</p>
+  </footer>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     PAGE: DASHBOARD
+══════════════════════════════════════════════════════ -->
+<div id="page-dashboard" class="page dashboard-page">
+
+  <div class="dashboard-header">
+    <div class="dash-header-inner">
+      <div class="dash-greeting">
+        <h2>Welcome back, Priya 👋</h2>
+        <p>Career report generated • Last updated: Today, 10:42 AM</p>
+      </div>
+      <div style="display:flex; gap:1rem; align-items:center;">
+        <div class="dash-score">
+          <div class="score-num">72</div>
+          <div class="score-label">Career Health Score</div>
+        </div>
+        <div class="dash-score">
+          <div class="score-num" style="color:#F59E0B;">Med</div>
+          <div class="score-label">Entropy Level</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dashboard-body">
+
+    <!-- Skills Panel -->
+    <div class="dash-panel">
+      <div class="panel-title">🧠 Extracted Skills</div>
+      <div class="panel-subtitle">AI-parsed from your work history and profile</div>
+      <div class="skill-badges">
+        <span class="skill-badge badge-blue">Python</span>
+        <span class="skill-badge badge-blue">TensorFlow</span>
+        <span class="skill-badge badge-teal">AWS</span>
+        <span class="skill-badge badge-teal">Docker</span>
+        <span class="skill-badge badge-blue">React.js</span>
+        <span class="skill-badge badge-amber">SQL</span>
+        <span class="skill-badge badge-teal">FastAPI</span>
+        <span class="skill-badge badge-blue">NLP</span>
+        <span class="skill-badge badge-amber">Manual QA</span>
+        <span class="skill-badge badge-blue">Git</span>
+      </div>
+    </div>
+
+    <!-- Entropy Panel -->
+    <div class="dash-panel">
+      <div class="panel-title">📊 Skill Entropy Meter</div>
+      <div class="panel-subtitle">Market relevance decay analysis across your skill set</div>
+
+      <div class="entropy-meter">
+        <div class="em-label">
+          <span>Python / ML</span>
+          <span style="color:#14B8A6; font-weight:600;">87% — Stable</span>
+        </div>
+        <div class="em-track">
+          <div class="em-fill bar-stable" style="width:87%"></div>
+        </div>
+      </div>
+
+      <div class="entropy-meter">
+        <div class="em-label">
+          <span>Cloud / DevOps</span>
+          <span style="color:#14B8A6; font-weight:600;">79% — Stable</span>
+        </div>
+        <div class="em-track">
+          <div class="em-fill bar-stable" style="width:79%"></div>
+        </div>
+      </div>
+
+      <div class="entropy-meter">
+        <div class="em-label">
+          <span>Frontend (React)</span>
+          <span style="color:#F59E0B; font-weight:600;">61% — Monitor</span>
+        </div>
+        <div class="em-track">
+          <div class="em-fill bar-monitor" style="width:61%"></div>
+        </div>
+      </div>
+
+      <div class="entropy-meter">
+        <div class="em-label">
+          <span>SQL / Legacy DB</span>
+          <span style="color:#F59E0B; font-weight:600;">52% — Monitor</span>
+        </div>
+        <div class="em-track">
+          <div class="em-fill bar-monitor" style="width:52%"></div>
+        </div>
+      </div>
+
+      <div class="entropy-meter">
+        <div class="em-label">
+          <span>Manual QA Testing</span>
+          <span style="color:#EF4444; font-weight:600;">28% — At Risk</span>
+        </div>
+        <div class="em-track">
+          <div class="em-fill bar-risk" style="width:28%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chart Panel -->
+    <div class="dash-panel dash-panel-full">
+      <div class="panel-title">📈 Skill Trajectory Forecast (12 Months)</div>
+      <div class="panel-subtitle">Predictive entropy projection based on AI adoption trends and market signals</div>
+      <div class="chart-wrap">
+        <canvas id="forecastChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Forecast Cards -->
+    <div class="dash-panel dash-panel-full">
+      <div class="panel-title">🔮 Adjacent Career Recommendations</div>
+      <div class="panel-subtitle">AI-identified pivot paths based on your skill overlap and market demand signals</div>
+      <div class="forecast-grid">
+        <div class="forecast-card">
+          <div class="fc-icon">🤖</div>
+          <div class="fc-title">ML Engineer → AI Product Manager</div>
+          <div class="fc-desc">78% skill overlap. Leverage your technical foundation to lead AI product strategy and roadmap.</div>
+          <span class="fc-tag tag-stable">High Match</span>
+        </div>
+        <div class="forecast-card">
+          <div class="fc-icon">🏗️</div>
+          <div class="fc-title">Software Dev → Cloud Architect</div>
+          <div class="fc-desc">71% skill overlap. Extend AWS/Docker expertise into enterprise cloud architecture design.</div>
+          <span class="fc-tag tag-stable">High Match</span>
+        </div>
+        <div class="forecast-card">
+          <div class="fc-icon">📊</div>
+          <div class="fc-title">Dev → MLOps Specialist</div>
+          <div class="fc-desc">68% overlap. Bridge ML and DevOps to become the operational backbone of AI teams.</div>
+          <span class="fc-tag tag-monitor">Medium Match</span>
+        </div>
+        <div class="forecast-card">
+          <div class="fc-icon">🎓</div>
+          <div class="fc-title">Engineer → AI Educator / Consultant</div>
+          <div class="fc-desc">Use deep expertise to train the next generation of AI practitioners globally.</div>
+          <span class="fc-tag tag-monitor">Medium Match</span>
+        </div>
+        <div class="forecast-card">
+          <div class="fc-icon">🔐</div>
+          <div class="fc-title">Dev → AI Safety Researcher</div>
+          <div class="fc-desc">Rapidly growing field with 340% YoY demand increase. High social impact + premium salary.</div>
+          <span class="fc-tag" style="background:rgba(239,68,68,0.1);color:#EF4444;">Emerging</span>
+        </div>
+        <div class="forecast-card">
+          <div class="fc-icon">🌐</div>
+          <div class="fc-title">→ Startup Founder (AI-Native)</div>
+          <div class="fc-desc">Your full-stack profile combined with ML expertise positions you well for AI product entrepreneurship.</div>
+          <span class="fc-tag" style="background:rgba(139,92,246,0.1);color:#7C3AED;">Ambitious</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Geospatial Panel -->
+    <div class="dash-panel dash-panel-full">
+      <div class="panel-title">📍 Nearest Career Counselors</div>
+      <div class="panel-subtitle">Geospatially matched mentors within your region — verified industry professionals</div>
+
+      <div class="map-placeholder">
+        <div class="map-pins">
+          <div class="map-pin">📍</div>
+          <div class="map-pin">📍</div>
+          <div class="map-pin">📍</div>
+        </div>
+        <p style="color:var(--muted); font-size:0.85rem;">Interactive Map — Powered by Google Maps API</p>
+        <p style="font-size:0.78rem; color:var(--muted); margin-top:0.3rem;">3 counselors found within 15km of Bangalore, Karnataka</p>
+      </div>
+
+      <div class="counselor-cards">
+        <div class="counselor-card">
+          <div class="counselor-avatar">RS</div>
+          <div style="flex:1;">
+            <div class="counselor-info">
+              <h4>Rahul Sinha</h4>
+              <p>AI/ML Career Specialist · 12 yrs exp</p>
+              <div class="dist">📍 3.2 km away · Indiranagar</div>
+            </div>
+            <button class="btn-xs btn-xs-primary">Book Meeting</button>
+            <button class="btn-xs btn-xs-ghost">Contact</button>
+          </div>
+        </div>
+        <div class="counselor-card">
+          <div class="counselor-avatar">AK</div>
+          <div style="flex:1;">
+            <div class="counselor-info">
+              <h4>Ananya Krishnan</h4>
+              <p>Product & Strategy Career Coach · 8 yrs</p>
+              <div class="dist">📍 7.1 km away · Koramangala</div>
+            </div>
+            <button class="btn-xs btn-xs-primary">Book Meeting</button>
+            <button class="btn-xs btn-xs-ghost">Contact</button>
+          </div>
+        </div>
+        <div class="counselor-card">
+          <div class="counselor-avatar">VM</div>
+          <div style="flex:1;">
+            <div class="counselor-info">
+              <h4>Vijay Mohan</h4>
+              <p>Global Career Pathways Expert · 15 yrs</p>
+              <div class="dist">📍 12.4 km away · Whitefield</div>
+            </div>
+            <button class="btn-xs btn-xs-primary">Book Meeting</button>
+            <button class="btn-xs btn-xs-ghost">Contact</button>
+          </div>
+        </div>
+        <div class="counselor-card">
+          <div class="counselor-avatar">PP</div>
+          <div style="flex:1;">
+            <div class="counselor-info">
+              <h4>Preethi Pillai</h4>
+              <p>Inclusivity & Adaptive Career Specialist</p>
+              <div class="dist">📍 14.8 km away · HSR Layout</div>
+            </div>
+            <button class="btn-xs btn-xs-primary">Book Meeting</button>
+            <button class="btn-xs btn-xs-ghost">Contact</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scholarships Panel -->
+    <div class="dash-panel dash-panel-full">
+      <div class="panel-title">🎓 Matched Scholarships</div>
+      <div class="panel-subtitle">Auto-matched based on your profile, eligibility, and career goals</div>
+
+      <div class="scholarship-list">
+        <div class="scholarship-card">
+          <div class="sc-info">
+            <h4>Tata Trusts AI Scholarship 2025</h4>
+            <div class="sc-tags" style="margin-top:0.4rem;">
+              <span class="sc-tag" style="background:rgba(37,99,235,0.1);color:var(--accent);">Merit-Based</span>
+              <span class="sc-tag" style="background:rgba(20,184,166,0.1);color:var(--teal);">AI/ML Track</span>
+              <span class="sc-tag" style="background:rgba(245,158,11,0.1);color:#D97706;">₹5L Award</span>
+            </div>
+          </div>
+          <button class="sc-apply">Apply Now →</button>
+        </div>
+
+        <div class="scholarship-card">
+          <div class="sc-info">
+            <h4>Google India Women Techmakers Grant</h4>
+            <div class="sc-tags" style="margin-top:0.4rem;">
+              <span class="sc-tag" style="background:rgba(239,68,68,0.1);color:#EF4444;">Need-Based</span>
+              <span class="sc-tag" style="background:rgba(37,99,235,0.1);color:var(--accent);">International</span>
+              <span class="sc-tag" style="background:rgba(139,92,246,0.1);color:#7C3AED;">$10,000 USD</span>
+            </div>
+          </div>
+          <button class="sc-apply">Apply Now →</button>
+        </div>
+
+        <div class="scholarship-card">
+          <div class="sc-info">
+            <h4>AICTE Doctoral Fellowship — AI Research</h4>
+            <div class="sc-tags" style="margin-top:0.4rem;">
+              <span class="sc-tag" style="background:rgba(37,99,235,0.1);color:var(--accent);">Merit-Based</span>
+              <span class="sc-tag" style="background:rgba(20,184,166,0.1);color:var(--teal);">India</span>
+              <span class="sc-tag" style="background:rgba(245,158,11,0.1);color:#D97706;">₹70K/month</span>
+            </div>
+          </div>
+          <button class="sc-apply">Apply Now →</button>
+        </div>
+
+        <div class="scholarship-card">
+          <div class="sc-info">
+            <h4>Wellcome Trust Disability Fellowship</h4>
+            <div class="sc-tags" style="margin-top:0.4rem;">
+              <span class="sc-tag" style="background:rgba(20,184,166,0.1);color:var(--teal);">Accessibility</span>
+              <span class="sc-tag" style="background:rgba(239,68,68,0.1);color:#EF4444;">Need-Based</span>
+              <span class="sc-tag" style="background:rgba(139,92,246,0.1);color:#7C3AED;">£15,000 GBP</span>
+            </div>
+          </div>
+          <button class="sc-apply">Apply Now →</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <p>© 2025 <span>SkillSphere</span> — AI Career Evolution Platform</p>
+  </footer>
+</div>
+
+<style>
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+</style>
+
+<!-- ══════════════════════════════════════════════════════
+     AUTH MODAL (Sign In / Sign Up)
+══════════════════════════════════════════════════════ -->
+<div class="auth-overlay" id="auth-overlay" onclick="handleOverlayClick(event)">
+  <div class="auth-modal">
+    <button class="auth-modal-close" onclick="closeAuth()">✕</button>
+
+    <!-- Header with tabs -->
+    <div class="auth-modal-header">
+      <div class="auth-logo">Skill<span>Sphere</span></div>
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tab-signin" onclick="switchAuthTab('signin')">Sign In</button>
+        <button class="auth-tab" id="tab-signup" onclick="switchAuthTab('signup')">Create Account</button>
+      </div>
+    </div>
+
+    <div class="auth-modal-body">
+
+      <!-- ── SIGN IN PANEL ── -->
+      <div class="auth-panel active" id="panel-signin">
+        <h3 class="auth-title">Welcome back 👋</h3>
+        <p class="auth-subtitle">Sign in to access your career intelligence dashboard</p>
+
+        <div class="auth-form">
+          <div class="auth-input-wrap">
+            <span class="input-icon">✉️</span>
+            <input type="email" id="si-email" placeholder="Email address" autocomplete="email">
+          </div>
+
+          <div class="auth-input-wrap">
+            <span class="input-icon">🔒</span>
+            <input type="password" id="si-password" placeholder="Password" autocomplete="current-password">
+            <button class="pw-toggle" onclick="togglePw('si-password', this)" type="button">👁️</button>
+          </div>
+
+          <div class="auth-row">
+            <label class="auth-remember">
+              <input type="checkbox" id="si-remember"> Remember me
+            </label>
+            <a class="auth-forgot" onclick="showForgotPassword()">Forgot password?</a>
+          </div>
+
+          <button class="auth-submit" onclick="handleSignIn()">Sign In →</button>
+
+          <div class="auth-divider">or continue with</div>
+
+          <div class="social-btns">
+            <button class="social-btn" onclick="handleSocialAuth('Google')">
+              <span class="social-icon">🔴</span> Google
+            </button>
+            <button class="social-btn" onclick="handleSocialAuth('LinkedIn')">
+              <span class="social-icon">🔵</span> LinkedIn
+            </button>
+            <button class="social-btn" onclick="handleSocialAuth('GitHub')">
+              <span class="social-icon">⚫</span> GitHub
+            </button>
+          </div>
+        </div>
+
+        <div class="auth-switch">
+          Don't have an account? <a onclick="switchAuthTab('signup')">Create one free →</a>
+        </div>
+      </div>
+
+      <!-- ── SIGN UP PANEL ── -->
+      <div class="auth-panel" id="panel-signup">
+        <h3 class="auth-title">Start your evolution 🚀</h3>
+        <p class="auth-subtitle">Create your free account and get your AI career report in minutes</p>
+
+        <div class="auth-form">
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem;">
+            <div class="auth-input-wrap">
+              <span class="input-icon">👤</span>
+              <input type="text" id="su-firstname" placeholder="First name" autocomplete="given-name">
+            </div>
+            <div class="auth-input-wrap">
+              <span class="input-icon">👤</span>
+              <input type="text" id="su-lastname" placeholder="Last name" autocomplete="family-name">
+            </div>
+          </div>
+
+          <div class="auth-input-wrap">
+            <span class="input-icon">✉️</span>
+            <input type="email" id="su-email" placeholder="Email address" autocomplete="email">
+          </div>
+
+          <div class="auth-input-wrap">
+            <span class="input-icon">💼</span>
+            <input type="text" id="su-role" placeholder="Current role (e.g. Software Engineer)">
+          </div>
+
+          <div class="auth-input-wrap">
+            <span class="input-icon">🔒</span>
+            <input type="password" id="su-password" placeholder="Create password" oninput="checkPasswordStrength(this.value)" autocomplete="new-password">
+            <button class="pw-toggle" onclick="togglePw('su-password', this)" type="button">👁️</button>
+          </div>
+
+          <!-- Password strength meter -->
+          <div class="pw-strength">
+            <div class="pw-bar"><div class="pw-fill" id="pw-fill"></div></div>
+            <div class="pw-label" id="pw-label">Enter a password</div>
+          </div>
+
+          <div class="auth-input-wrap">
+            <span class="input-icon">🔒</span>
+            <input type="password" id="su-confirm" placeholder="Confirm password" autocomplete="new-password">
+          </div>
+
+          <button class="auth-submit" onclick="handleSignUp()">Create Free Account →</button>
+
+          <div class="auth-divider">or sign up with</div>
+
+          <div class="social-btns">
+            <button class="social-btn" onclick="handleSocialAuth('Google')">
+              <span class="social-icon">🔴</span> Google
+            </button>
+            <button class="social-btn" onclick="handleSocialAuth('LinkedIn')">
+              <span class="social-icon">🔵</span> LinkedIn
+            </button>
+            <button class="social-btn" onclick="handleSocialAuth('GitHub')">
+              <span class="social-icon">⚫</span> GitHub
+            </button>
+          </div>
+        </div>
+
+        <div class="auth-terms">
+          By creating an account you agree to our
+          <a>Terms of Service</a> and <a>Privacy Policy</a>
+        </div>
+
+        <div class="auth-switch">
+          Already have an account? <a onclick="switchAuthTab('signin')">Sign in →</a>
+        </div>
+      </div>
+
+      <!-- ── FORGOT PASSWORD PANEL ── -->
+      <div class="auth-panel" id="panel-forgot">
+        <h3 class="auth-title">Reset password 🔑</h3>
+        <p class="auth-subtitle">Enter your email and we'll send you a reset link</p>
+
+        <div class="auth-form">
+          <div class="auth-input-wrap">
+            <span class="input-icon">✉️</span>
+            <input type="email" id="fp-email" placeholder="Your email address">
+          </div>
+          <button class="auth-submit" onclick="handleForgotPassword()">Send Reset Link →</button>
+        </div>
+
+        <div class="auth-switch">
+          <a onclick="switchAuthTab('signin')">← Back to Sign In</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- TOAST NOTIFICATION -->
+<div class="toast" id="toast">
+  <span class="toast-icon" id="toast-icon">✅</span>
+  <span id="toast-msg">Success!</span>
+</div>
+
+<script>
+/* ─── PAGE NAVIGATION ─── */
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  window.scrollTo(0,0);
+
+  // Nav active state
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  if (name === 'home') document.getElementById('nav-home').classList.add('active');
+  if (name === 'wizard') document.getElementById('nav-wizard').classList.add('active');
+  if (name === 'dashboard') document.getElementById('nav-dashboard').classList.add('active');
+
+  if (name === 'dashboard') initDashboard();
+}
+
+/* ─── WIZARD ─── */
+let currentStep = 1;
+
+function nextStep(step) {
+  document.getElementById('wizard-step-' + currentStep).classList.remove('active');
+  document.getElementById('step-ind-' + currentStep).classList.remove('active');
+  document.getElementById('step-ind-' + currentStep).classList.add('done');
+
+  currentStep = step;
+
+  const stepEl = document.getElementById('wizard-step-' + step);
+  if (stepEl) {
+    stepEl.classList.add('active');
+    document.getElementById('step-ind-' + step).classList.add('active');
+    document.getElementById('step-ind-' + step).classList.remove('done');
+    document.getElementById('wizard-progress').style.width = (step * 25) + '%';
+  }
+}
+
+function requestLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        document.getElementById('f-city').value = 'Bangalore';
+        document.getElementById('f-state').value = 'Karnataka';
+        alert('Location captured! Nearest counselors will be matched to your coordinates.');
+      },
+      () => alert('Location access denied. Please enter manually.')
+    );
+  }
+}
+
+function submitAssessment() {
+  const card = document.querySelector('.wizard-card');
+  const processing = document.getElementById('wizard-processing');
+  card.style.display = 'none';
+  processing.style.display = 'block';
+
+  // Animate loading bar
+  setTimeout(() => {
+    document.getElementById('loading-bar').style.width = '100%';
+  }, 100);
+
+  // Mock API calls
+  const apiCalls = [
+    fetch('/api/parse-skills', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ history: 'mock' }) }).catch(() => null),
+    fetch('/api/skill-entropy', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ skills: [] }) }).catch(() => null),
+    fetch('/api/adjacent-roles', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ role: 'Engineer' }) }).catch(() => null),
+    fetch('/api/nearest-counsellor', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ lat: 12.9, lng: 77.6 }) }).catch(() => null),
+    fetch('/api/scholarship-match', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ profile: {} }) }).catch(() => null),
+  ];
+
+  Promise.allSettled(apiCalls).then(() => {
+    setTimeout(() => showPage('dashboard'), 2800);
+  });
+}
+
+/* ─── NEURAL NETWORK CANVAS ─── */
+function initNeural() {
+  const canvas = document.getElementById('neural');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  function resize() {
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+  }
+
+  resize();
+  window.addEventListener('resize', resize);
+
+  const nodes = [];
+  for (let i = 0; i < 55; i++) {
+    nodes.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 0.4,
+      vy: (Math.random() - 0.5) * 0.4,
+      r: Math.random() * 2.5 + 1
+    });
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    nodes.forEach(n => {
+      n.x += n.vx; n.y += n.vy;
+      if (n.x < 0 || n.x > canvas.width) n.vx *= -1;
+      if (n.y < 0 || n.y > canvas.height) n.vy *= -1;
+    });
+
+    // Edges
+    for (let i = 0; i < nodes.length; i++) {
+      for (let j = i + 1; j < nodes.length; j++) {
+        const dx = nodes[i].x - nodes[j].x;
+        const dy = nodes[i].y - nodes[j].y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < 120) {
+          ctx.beginPath();
+          ctx.moveTo(nodes[i].x, nodes[i].y);
+          ctx.lineTo(nodes[j].x, nodes[j].y);
+          ctx.strokeStyle = `rgba(37,99,235,${0.4 * (1 - dist/120)})`;
+          ctx.lineWidth = 0.8;
+          ctx.stroke();
+        }
+      }
+    }
+
+    // Nodes
+    nodes.forEach(n => {
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(37,99,235,0.7)';
+      ctx.fill();
+    });
+
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+/* ─── DASHBOARD CHARTS ─── */
+let chartInit = false;
+
+function initDashboard() {
+  if (chartInit) return;
+  chartInit = true;
+
+  setTimeout(() => {
+    const ctx = document.getElementById('forecastChart');
+    if (!ctx) return;
+
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['Now', '2M', '4M', '6M', '8M', '10M', '12M'],
+        datasets: [
+          {
+            label: 'Python/ML',
+            data: [87, 86, 88, 89, 91, 90, 92],
+            borderColor: '#14B8A6',
+            backgroundColor: 'rgba(20,184,166,0.08)',
+            tension: 0.4, fill: true,
+            borderWidth: 2.5, pointRadius: 3,
+          },
+          {
+            label: 'Frontend (React)',
+            data: [61, 59, 57, 55, 58, 54, 51],
+            borderColor: '#F59E0B',
+            backgroundColor: 'rgba(245,158,11,0.08)',
+            tension: 0.4, fill: true,
+            borderWidth: 2.5, pointRadius: 3,
+          },
+          {
+            label: 'Manual QA',
+            data: [28, 24, 20, 16, 12, 9, 7],
+            borderColor: '#EF4444',
+            backgroundColor: 'rgba(239,68,68,0.08)',
+            tension: 0.4, fill: true,
+            borderWidth: 2.5, pointRadius: 3,
+          }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            labels: {
+              color: '#64748B', font: { family: 'DM Sans', size: 12 },
+              boxWidth: 16, padding: 16
+            }
+          },
+          tooltip: {
+            backgroundColor: '#0B3D91',
+            titleColor: 'white', bodyColor: 'rgba(255,255,255,0.7)',
+          }
+        },
+        scales: {
+          x: {
+            grid: { color: 'rgba(0,0,0,0.04)' },
+            ticks: { color: '#94A3B8', font: { family: 'DM Sans' } }
+          },
+          y: {
+            grid: { color: 'rgba(0,0,0,0.04)' },
+            ticks: { color: '#94A3B8', font: { family: 'DM Sans' } },
+            min: 0, max: 100,
+            title: { display: true, text: 'Relevance Score %', color: '#94A3B8' }
+          }
+        }
+      }
+    });
+  }, 300);
+}
+
+/* ─── AUTH STATE ─── */
+let currentUser = null;
+
+// Simple in-memory user store (simulates backend)
+const userStore = {};
+
+function openAuth(tab = 'signin') {
+  const overlay = document.getElementById('auth-overlay');
+  overlay.classList.add('open');
+  switchAuthTab(tab);
+  document.body.style.overflow = 'hidden';
+}
+
+function closeAuth() {
+  document.getElementById('auth-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('auth-overlay')) closeAuth();
+}
+
+function switchAuthTab(tab) {
+  // Update tabs
+  document.getElementById('tab-signin').classList.toggle('active', tab === 'signin');
+  document.getElementById('tab-signup').classList.toggle('active', tab === 'signup');
+
+  // Show panels
+  document.getElementById('panel-signin').classList.toggle('active', tab === 'signin');
+  document.getElementById('panel-signup').classList.toggle('active', tab === 'signup');
+  document.getElementById('panel-forgot').classList.toggle('active', tab === 'forgot');
+}
+
+function showForgotPassword() {
+  document.getElementById('tab-signin').classList.remove('active');
+  document.getElementById('tab-signup').classList.remove('active');
+  document.getElementById('panel-signin').classList.remove('active');
+  document.getElementById('panel-signup').classList.remove('active');
+  document.getElementById('panel-forgot').classList.add('active');
+}
+
+/* ─── SIGN IN ─── */
+function handleSignIn() {
+  const email = document.getElementById('si-email').value.trim();
+  const password = document.getElementById('si-password').value;
+
+  if (!email || !password) {
+    showToast('⚠️', 'Please fill in all fields', '#F59E0B'); return;
+  }
+  if (!isValidEmail(email)) {
+    showToast('❌', 'Please enter a valid email address', '#EF4444'); return;
+  }
+
+  // Simulate API call
+  const btn = document.querySelector('#panel-signin .auth-submit');
+  btn.textContent = 'Signing in...'; btn.disabled = true;
+
+  setTimeout(() => {
+    btn.textContent = 'Sign In →'; btn.disabled = false;
+
+    // Check store or accept any email (demo mode)
+    const stored = userStore[email];
+    if (stored && stored.password !== password) {
+      showToast('❌', 'Incorrect password. Please try again.', '#EF4444'); return;
+    }
+
+    const name = stored ? stored.firstName : email.split('@')[0];
+    loginUser({ email, name: name.charAt(0).toUpperCase() + name.slice(1) });
+  }, 1200);
+}
+
+/* ─── SIGN UP ─── */
+function handleSignUp() {
+  const firstName = document.getElementById('su-firstname').value.trim();
+  const lastName = document.getElementById('su-lastname').value.trim();
+  const email = document.getElementById('su-email').value.trim();
+  const role = document.getElementById('su-role').value.trim();
+  const password = document.getElementById('su-password').value;
+  const confirm = document.getElementById('su-confirm').value;
+
+  if (!firstName || !email || !password || !confirm) {
+    showToast('⚠️', 'Please fill in all required fields', '#F59E0B'); return;
+  }
+  if (!isValidEmail(email)) {
+    showToast('❌', 'Please enter a valid email address', '#EF4444'); return;
+  }
+  if (password.length < 8) {
+    showToast('❌', 'Password must be at least 8 characters', '#EF4444'); return;
+  }
+  if (password !== confirm) {
+    showToast('❌', 'Passwords do not match', '#EF4444'); return;
+  }
+
+  const btn = document.querySelector('#panel-signup .auth-submit');
+  btn.textContent = 'Creating account...'; btn.disabled = true;
+
+  setTimeout(() => {
+    btn.textContent = 'Create Free Account →'; btn.disabled = false;
+
+    // Store user
+    userStore[email] = { firstName, lastName, email, role, password };
+    loginUser({ email, name: firstName });
+  }, 1400);
+}
+
+/* ─── FORGOT PASSWORD ─── */
+function handleForgotPassword() {
+  const email = document.getElementById('fp-email').value.trim();
+  if (!email || !isValidEmail(email)) {
+    showToast('⚠️', 'Please enter a valid email address', '#F59E0B'); return;
+  }
+
+  const btn = document.querySelector('#panel-forgot .auth-submit');
+  btn.textContent = 'Sending...'; btn.disabled = true;
+
+  setTimeout(() => {
+    btn.textContent = 'Send Reset Link →'; btn.disabled = false;
+    showToast('✅', `Reset link sent to ${email}!`, '#14B8A6');
+    setTimeout(() => switchAuthTab('signin'), 1500);
+  }, 1200);
+}
+
+/* ─── SOCIAL AUTH ─── */
+function handleSocialAuth(provider) {
+  showToast('🔗', `Connecting to ${provider}... (demo)`, '#2563EB');
+  setTimeout(() => {
+    loginUser({ email: `user@${provider.toLowerCase()}.com`, name: 'Demo User' });
+  }, 1000);
+}
+
+/* ─── LOGIN / LOGOUT ─── */
+function loginUser(user) {
+  currentUser = user;
+  closeAuth();
+
+  // Update nav
+  const initials = user.name.substring(0, 2).toUpperCase();
+  document.getElementById('nav-avatar').textContent = initials;
+  document.getElementById('nav-username').textContent = user.name.split(' ')[0];
+  document.getElementById('nav-links-main').style.display = 'none';
+  document.getElementById('nav-user-area').style.display = 'flex';
+
+  showToast('✅', `Welcome back, ${user.name.split(' ')[0]}! 🎉`, '#14B8A6');
+
+  // Update dashboard greeting
+  const greetEl = document.querySelector('.dash-greeting h2');
+  if (greetEl) greetEl.textContent = `Welcome back, ${user.name.split(' ')[0]} 👋`;
+
+  // Redirect to dashboard after short delay
+  setTimeout(() => showPage('dashboard'), 1200);
+}
+
+function signOut() {
+  currentUser = null;
+  document.getElementById('nav-links-main').style.display = 'flex';
+  document.getElementById('nav-user-area').style.display = 'none';
+  showToast('👋', 'Signed out successfully', '#64748B');
+  showPage('home');
+}
+
+/* ─── HELPERS ─── */
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function togglePw(inputId, btn) {
+  const input = document.getElementById(inputId);
+  if (input.type === 'password') {
+    input.type = 'text'; btn.textContent = '🙈';
+  } else {
+    input.type = 'password'; btn.textContent = '👁️';
+  }
+}
+
+function checkPasswordStrength(val) {
+  const fill = document.getElementById('pw-fill');
+  const label = document.getElementById('pw-label');
+  let score = 0;
+  if (val.length >= 8) score++;
+  if (/[A-Z]/.test(val)) score++;
+  if (/[0-9]/.test(val)) score++;
+  if (/[^A-Za-z0-9]/.test(val)) score++;
+
+  const levels = [
+    { w: '0%', color: '#EF4444', text: 'Too short' },
+    { w: '25%', color: '#EF4444', text: 'Weak' },
+    { w: '50%', color: '#F59E0B', text: 'Fair' },
+    { w: '75%', color: '#3B82F6', text: 'Good' },
+    { w: '100%', color: '#14B8A6', text: 'Strong ✓' },
+  ];
+  const lvl = val.length === 0 ? 0 : Math.max(1, score);
+  fill.style.width = levels[lvl].w;
+  fill.style.background = levels[lvl].color;
+  label.textContent = val.length === 0 ? 'Enter a password' : levels[lvl].text;
+  label.style.color = levels[lvl].color;
+}
+
+let toastTimer;
+function showToast(icon, msg, color = '#14B8A6') {
+  const toast = document.getElementById('toast');
+  const toastIcon = document.getElementById('toast-icon');
+  const toastMsg = document.getElementById('toast-msg');
+
+  toastIcon.textContent = icon;
+  toastMsg.textContent = msg;
+  toast.style.borderLeft = `4px solid ${color}`;
+  toast.classList.add('show');
+
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove('show'), 3500);
+}
+
+/* ─── ESC KEY TO CLOSE ─── */
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeAuth();
+});
+window.addEventListener('DOMContentLoaded', () => {
+  initNeural();
+
+  // Animate bars on scroll / load
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.animationPlayState = 'running';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.problem-card, .value-block, .incl-card').forEach(el => {
+    el.style.animationPlayState = 'paused';
+    el.style.animation = 'fadeUp 0.6s ease both';
+    observer.observe(el);
+  });
+});
+</script>
+</body>
+</html>

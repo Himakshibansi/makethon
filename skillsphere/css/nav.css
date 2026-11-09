@@ -1,0 +1,73 @@
+/* ═══════════════════════════════════════════
+   nav.css — Navigation bar & user area
+   ═══════════════════════════════════════════ */
+
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: rgba(6, 13, 31, 0.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(37,99,235,0.2);
+  padding: 0 2rem;
+  height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+
+.nav-logo {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.4rem; font-weight: 800;
+  color: white;
+  cursor: pointer;
+  display: flex; align-items: center; gap: 0.4rem;
+}
+.nav-logo span { color: var(--teal); }
+
+.nav-links {
+  display: flex; gap: 0; list-style: none;
+}
+.nav-links li a {
+  color: rgba(255,255,255,0.7);
+  text-decoration: none;
+  font-size: 0.82rem; font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.nav-links li a:hover,
+.nav-links li a.active {
+  color: white;
+  background: rgba(37,99,235,0.25);
+}
+
+.nav-cta {
+  background: var(--accent);
+  color: white !important;
+  padding: 0.5rem 1.2rem !important;
+  border-radius: 8px !important;
+}
+
+.nav-mobile-btn {
+  display: none;
+  background: none; border: none; cursor: pointer;
+  color: white; font-size: 1.5rem;
+}
+
+/* Logged-in user area */
+.nav-user {
+  display: flex; align-items: center; gap: 0.8rem;
+}
+.nav-user-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: linear-gradient(135deg, #2563EB, #14B8A6);
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-weight: 700; font-size: 0.75rem;
+  cursor: pointer;
+}
+.nav-user-name { color: rgba(255,255,255,0.8); font-size: 0.82rem; font-weight: 500; }
+.nav-signout {
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.6); font-size: 0.75rem; padding: 0.3rem 0.7rem;
+  border-radius: 6px; cursor: pointer; font-family: 'DM Sans', sans-serif;
+  transition: all 0.2s;
+}
+.nav-signout:hover { background: rgba(255,0,0,0.15); color: #FCA5A5; border-color: rgba(239,68,68,0.3); }

@@ -1,0 +1,126 @@
+/* ═══════════════════════════════════════════
+   hero.css — Hero section & entropy card
+   ═══════════════════════════════════════════ */
+
+.hero {
+  min-height: 100vh;
+  background: var(--dark);
+  position: relative;
+  display: flex; align-items: center;
+  overflow: hidden;
+  padding: 6rem 2rem 4rem;
+}
+
+canvas#neural { position: absolute; inset: 0; opacity: 0.35; }
+
+.hero-content {
+  position: relative; z-index: 2;
+  max-width: 1200px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;
+}
+
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: rgba(37,99,235,0.2);
+  border: 1px solid rgba(37,99,235,0.4);
+  color: #93C5FD;
+  font-size: 0.78rem; font-weight: 600;
+  padding: 0.4rem 1rem; border-radius: 100px;
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.05em;
+  animation: fadeUp 0.6s ease both;
+}
+.hero-badge .dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--teal);
+  animation: pulse 2s infinite;
+}
+
+.hero h1 {
+  font-size: clamp(2.2rem, 4vw, 3.4rem);
+  font-weight: 800;
+  color: white;
+  line-height: 1.15;
+  margin-bottom: 1.2rem;
+  animation: fadeUp 0.7s ease 0.1s both;
+}
+.hero h1 .highlight {
+  background: linear-gradient(135deg, #2563EB, #14B8A6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero p {
+  color: rgba(255,255,255,0.65);
+  font-size: 1.05rem; line-height: 1.7;
+  margin-bottom: 2rem;
+  animation: fadeUp 0.7s ease 0.2s both;
+}
+
+.hero-btns {
+  display: flex; gap: 1rem; flex-wrap: wrap;
+  animation: fadeUp 0.7s ease 0.3s both;
+}
+
+.hero-stats {
+  animation: fadeUp 0.7s ease 0.4s both;
+  display: flex; gap: 2rem; margin-top: 2.5rem;
+}
+.stat { text-align: left; }
+.stat-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.8rem; font-weight: 800;
+  color: var(--teal);
+}
+.stat-label {
+  font-size: 0.78rem; color: rgba(255,255,255,0.5);
+  margin-top: 0.1rem;
+}
+
+/* Hero Visual / Entropy Card */
+.hero-visual {
+  position: relative;
+  animation: fadeUp 0.8s ease 0.3s both;
+}
+
+.entropy-card {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
+  padding: 1.5rem;
+  backdrop-filter: blur(12px);
+}
+.entropy-card h4 {
+  color: rgba(255,255,255,0.7);
+  font-size: 0.82rem; font-weight: 600; margin-bottom: 1.2rem;
+  letter-spacing: 0.08em; text-transform: uppercase;
+}
+
+.skill-bar-item { margin-bottom: 1rem; }
+.skill-bar-label {
+  display: flex; justify-content: space-between; align-items: center;
+  color: white; font-size: 0.82rem; margin-bottom: 0.35rem;
+}
+.skill-bar-track {
+  height: 6px; background: rgba(255,255,255,0.1); border-radius: 100px;
+  overflow: hidden;
+}
+.skill-bar-fill {
+  height: 100%; border-radius: 100px;
+  animation: barGrow 1.5s ease both;
+}
+
+.bar-stable  { background: linear-gradient(90deg, #14B8A6, #06B6D4); }
+.bar-monitor { background: linear-gradient(90deg, #F59E0B, #FBBF24); }
+.bar-risk    { background: linear-gradient(90deg, #EF4444, #F97316); }
+
+.entropy-tag {
+  display: inline-block;
+  font-size: 0.68rem; font-weight: 700;
+  padding: 0.2rem 0.5rem; border-radius: 4px;
+  letter-spacing: 0.04em;
+}
+.tag-stable  { background: rgba(20,184,166,0.2);  color: #14B8A6; }
+.tag-monitor { background: rgba(245,158,11,0.2);  color: #F59E0B; }
+.tag-risk    { background: rgba(239,68,68,0.2);   color: #EF4444; }

@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SkillSphere — AI Career Evolution Platform</title>
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<!-- Leaflet (map) -->
+<link  rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- ── CSS ── (order matters: base first, then components) -->
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/nav.css">
+<link rel="stylesheet" href="css/hero.css">
+<link rel="stylesheet" href="css/sections.css">
+<link rel="stylesheet" href="css/wizard.css">
+<link rel="stylesheet" href="css/dashboard.css">
+<link rel="stylesheet" href="css/auth.css">
+<link rel="stylesheet" href="css/chatbot.css">
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════
+     NAVIGATION
+══════════════════════════════════════════════════════ -->
+<nav>
+  <div class="nav-logo" onclick="showPage('home')">Skill<span>Sphere</span></div>
+  <ul class="nav-links" id="nav-links-main">
+    <li><a onclick="showPage('home')"      class="active" id="nav-home">Home</a></li>
+    <li><a onclick="showPage('wizard')"    id="nav-wizard">Check Suitability</a></li>
+    <li><a href="#career-lib"              id="nav-careers">Career Library</a></li>
+    <li><a onclick="showPage('dashboard')" id="nav-dashboard">Student Dashboard</a></li>
+    <li><a href="#"                        id="nav-india">India Admissions</a></li>
+    <li><a onclick="openAuth('signin')"    id="nav-signin" style="color:rgba(255,255,255,0.7)">Sign In</a></li>
+    <li><a onclick="openAuth('signup')"    class="nav-cta">Get Started →</a></li>
+  </ul>
+  <div class="nav-user" id="nav-user-area" style="display:none;">
+    <div class="nav-user-avatar" id="nav-avatar" onclick="showPage('dashboard')">U</div>
+    <span class="nav-user-name" id="nav-username">User</span>
+    <button class="nav-signout" onclick="signOut()">Sign Out</button>
+  </div>
+  <button class="nav-mobile-btn" onclick="openAuth('signin')">☰</button>
+</nav>
+
+<!-- ══════════════════════════════════════════════════════
+     PAGE: HOME
+══════════════════════════════════════════════════════ -->
+<div id="page-home" class="page active">
+
+  <!-- HERO -->
+  <section class="hero" style="padding-top:80px;">
+    <canvas id="neural"></canvas>
+    <div class="hero-content">
+      <div class="hero-left">
+        <div class="hero-badge">
+          <span class="dot"></span>
+          AI-Powered Career Intelligence Platform
+        </div>
+        <h1>
+          Comprehensive<br>
+          <span class="highlight">AI-Driven Career</span><br>
+          Evolution Platform
+        </h1>
+        <p>
+          Neutralizing the Skills Half-Life Crisis through Predictive Intelligence &amp; Inclusive Career Mapping.
+          Stay ahead of professional obsolescence with real-time entropy monitoring.
+        </p>
+        <div class="hero-btns">
+          <button class="btn-primary"   onclick="showPage('wizard')">🎓 Assessment for Students</button>
+          <button class="btn-secondary" onclick="showPage('wizard')">💼 Assessment for Professionals</button>
+        </div>
+        <div class="hero-stats">
+          <div class="stat">
+            <div class="stat-num">87%</div>
+            <div class="stat-label">Skills Obsolescence Rate by 2030</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num">2.5yr</div>
+            <div class="stat-label">Average Tech Skill Half-Life</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num">4.2M+</div>
+            <div class="stat-label">Professionals at Risk Annually</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hero Entropy Card -->
+      <div class="hero-visual">
+        <div class="entropy-card">
+          <h4>Live Skill Entropy Monitor</h4>
+          <div id="hero-skill-bars">
+            <div style="text-align:center;padding:1.5rem 0;">
+              <div style="font-size:2rem;margin-bottom:0.6rem;">🧠</div>
+              <p style="color:rgba(255,255,255,0.5);font-size:0.83rem;line-height:1.5;">Complete the assessment to see your personalized skill entropy analysis</p>
+            </div>
+          </div>
+          <div style="border-top:1px solid rgba(255,255,255,0.08);margin-top:1.2rem;padding-top:1rem;">
+            <div style="display:flex;gap:1rem;justify-content:space-between;">
+              <div style="text-align:center;">
+                <div id="hero-career-score" style="color:#14B8A6;font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;">—</div>
+                <div style="color:rgba(255,255,255,0.4);font-size:0.72rem;">Career Score</div>
+              </div>
+              <div style="text-align:center;">
+                <div id="hero-pivot-count" style="color:#F59E0B;font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;">—</div>
+                <div style="color:rgba(255,255,255,0.4);font-size:0.72rem;">Pivot Paths</div>
+              </div>
+              <div style="text-align:center;">
+                <div id="hero-scholar-count" style="color:#2563EB;font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;">—</div>
+                <div style="color:rgba(255,255,255,0.4);font-size:0.72rem;">Scholarships</div>
+              </div>
+            </div>
+          </div>
+          <button class="btn-primary" style="width:100%;margin-top:1.2rem;padding:0.7rem;" onclick="showPage('wizard')">
+            Generate My Career Report →
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROBLEM SECTION -->
+  <section class="problem-section">
+    <div class="section-inner">
+      <div class="section-tag">⚠️ The Crisis</div>
+      <h2 class="section-title" style="color:white;">The Professional<br>Obsolescence Crisis</h2>
+      <p class="section-subtitle">The future of work is here — and most professionals are unprepared. Our platform identifies the cracks before careers collapse.</p>
+      <div class="cards-grid">
+        <div class="problem-card">
+          <div class="card-icon icon-amber">⏱️</div>
+          <h3>Skills Half-Life Trap</h3>
+          <p>AI evolution compresses the relevance window of professional skills. What took decades to master now becomes obsolete in under 3 years.</p>
+          <div class="card-stat">2.5 yrs</div>
+          <div style="font-size:0.75rem;color:rgba(255,255,255,0.35);margin-top:0.2rem;">Average tech skill half-life</div>
+        </div>
+        <div class="problem-card">
+          <div class="card-icon icon-red">📉</div>
+          <h3>Invisible Skill Decay</h3>
+          <p>Professionals have zero visibility into how their skills are depreciating in market value — until it's too late to pivot or retrain effectively.</p>
+          <div class="card-stat">91%</div>
+          <div style="font-size:0.75rem;color:rgba(255,255,255,0.35);margin-top:0.2rem;">Unaware of their decay rate</div>
+        </div>
+        <div class="problem-card">
+          <div class="card-icon icon-teal">♿</div>
+          <h3>Inclusion Gap</h3>
+          <p>Specially-abled professionals face double jeopardy — standard career pathways ignore adaptive work environments and unique capability profiles.</p>
+          <div class="card-stat">340M+</div>
+          <div style="font-size:0.75rem;color:rgba(255,255,255,0.35);margin-top:0.2rem;">Professionals underserved globally</div>
+        </div>
+        <div class="problem-card">
+          <div class="card-icon icon-blue">🔮</div>
+          <h3>Reactive Stagnation</h3>
+          <p>Career counseling reacts to crises instead of forecasting them. No predictive engine exists for adjacent career transitions before disruption hits.</p>
+          <div class="card-stat">78%</div>
+          <div style="font-size:0.75rem;color:rgba(255,255,255,0.35);margin-top:0.2rem;">Career pivots are forced not planned</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CORE VALUE -->
+  <section class="value-section" id="career-lib">
+    <div class="section-inner">
+      <div class="section-tag">💡 Our Solution</div>
+      <h2 class="section-title">Our Core Value Proposition</h2>
+      <p class="section-subtitle">Three pillars that transform reactive career counseling into predictive career engineering.</p>
+      <div class="value-grid">
+        <div class="value-block">
+          <div class="vb-icon">🌐</div>
+          <div class="vb-title">Global-Local Integration</div>
+          <div class="vb-desc">Bridge international opportunity with local mentorship through our dual-track intelligence system — AI-powered global insights meets human-driven local wisdom.</div>
+          <ul class="feature-list">
+            <li>Abroad visa &amp; education pathway module</li>
+            <li>Local counselor human mentorship system</li>
+            <li>Country-specific career demand forecasting</li>
+            <li>Cultural fit assessment engine</li>
+          </ul>
+        </div>
+        <div class="value-block">
+          <div class="vb-icon">🧭</div>
+          <div class="vb-title">Predictive Pivot Roadmaps</div>
+          <div class="vb-desc">Our entropy engine forecasts skill decay 12–36 months ahead and generates personalized adjacent career transition paths before disruption forces a crisis pivot.</div>
+          <ul class="feature-list">
+            <li>Adjacent career mapping via AI clustering</li>
+            <li>Skill transition forecasting (12–36 months)</li>
+            <li>Real-time job market signal integration</li>
+            <li>Personalized reskilling timeline</li>
+          </ul>
+        </div>
+        <div class="value-block">
+          <div class="vb-icon">🤝</div>
+          <div class="vb-title">Social Intelligence Engine</div>
+          <div class="vb-desc">Harness the collective intelligence of professional networks. Sync career data, extract trending insights, and benchmark against community trajectories in real time.</div>
+          <ul class="feature-list">
+            <li>LinkedIn profile data synchronization</li>
+            <li>Quora community-driven insight integration</li>
+            <li>Peer career trajectory benchmarking</li>
+            <li>Industry sentiment analysis</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INCLUSIVITY -->
+  <section class="inclusivity-section">
+    <div class="section-inner">
+      <div class="section-tag" style="color:#5EEAD4;">♿ Inclusivity</div>
+      <h2 class="section-title">Inclusivity &amp; Economic<br>Leveling Engine</h2>
+      <p class="section-subtitle">Career evolution should not be a privilege. We build pathways that include everyone — regardless of ability, geography, or economic standing.</p>
+      <div class="inclusivity-grid">
+        <div class="incl-card">
+          <div class="incl-icon">🦽</div>
+          <h3>Adaptive Pathway Mapping</h3>
+          <p>Specialized career roadmaps built for specially-abled professionals — accounting for physical capabilities, assistive technologies, and remote/hybrid work optimization.</p>
+        </div>
+        <div class="incl-card">
+          <div class="incl-icon">🏢</div>
+          <h3>Adaptive Work Environment Matching</h3>
+          <p>Our AI matches professionals with employers whose infrastructure, culture, and role specifications accommodate diverse accessibility needs — without compromise.</p>
+        </div>
+        <div class="incl-card">
+          <div class="incl-icon">⚙️</div>
+          <h3>Accessibility Preference Settings</h3>
+          <p>Granular accessibility configuration: screen reader optimization, motor impairment accommodations, cognitive load settings, and communication style preferences built into every assessment.</p>
+        </div>
+        <div class="incl-card">
+          <div class="incl-icon">🎓</div>
+          <h3>Automated Scholarship Engine</h3>
+          <p>AI-powered scholarship matching across merit, need-based, and accessibility criteria — surfacing opportunities from 10,000+ global scholarship databases automatically matched to your profile.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section style="background:var(--bg);padding:5rem 2rem;text-align:center;">
+    <div class="section-inner">
+      <div style="font-size:3rem;margin-bottom:1rem;">🚀</div>
+      <h2 class="section-title">Ready to Future-Proof Your Career?</h2>
+      <p class="section-subtitle" style="margin:0.8rem auto 2rem;">Take our 4-step AI assessment and receive your personalized Career Evolution Report — including entropy scores, pivot roadmaps, and scholarship matches.</p>
+      <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+        <button class="btn-primary" style="font-size:1rem;padding:1rem 2.5rem;" onclick="showPage('wizard')">Start Free Assessment →</button>
+        <button class="btn-ghost"   style="font-size:1rem;padding:1rem 2.5rem;" onclick="showPage('dashboard')">View Sample Dashboard</button>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2025 <span>SkillSphere</span> — AI Career Evolution Platform | Built for Hackathon 2025 | Predictive Intelligence for the Modern Professional</p>
+  </footer>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     PAGE: WIZARD
+══════════════════════════════════════════════════════ -->
+<div id="page-wizard" class="page" style="padding-top:64px;background:var(--bg);">
+  <div class="wizard-section" style="padding-top:3rem;">
+    <div class="wizard-container">
+      <div class="wizard-header">
+        <div class="section-tag">📋 Assessment</div>
+        <h2 class="section-title">Career Intelligence Assessment</h2>
+        <p style="color:var(--muted);font-size:0.9rem;">Complete 4 steps to generate your personalized AI Career Evolution Report</p>
+      </div>
+
+      <div class="progress-bar-wrap">
+        <div class="progress-fill" id="wizard-progress" style="width:25%"></div>
+      </div>
+
+      <div class="step-indicators">
+        <div class="step-dot active" id="step-ind-1"><div class="dot">1</div><span>Profile</span></div>
+        <div class="step-dot"        id="step-ind-2"><div class="dot">2</div><span>Experience</span></div>
+        <div class="step-dot"        id="step-ind-3"><div class="dot">3</div><span>Preferences</span></div>
+        <div class="step-dot"        id="step-ind-4"><div class="dot">4</div><span>Location</span></div>
+      </div>
+
+      <div class="wizard-card">
+
+        <!-- STEP 1: Profile -->
+        <div class="wizard-step active" id="wizard-step-1">
+          <div class="step-title">Basic Profile</div>
+          <div class="step-subtitle">Tell us who you are so we can personalize your career intelligence report</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Full Name</label>
+              <input type="text" placeholder="e.g. Priya Sharma" id="f-name">
+            </div>
+            <div class="form-group">
+              <label>Age</label>
+              <input type="number" placeholder="e.g. 27" id="f-age" min="16" max="70">
+            </div>
+            <div class="form-group">
+              <label>Education Level</label>
+              <select id="f-edu">
+                <option value="">Select level...</option>
+                <option>High School</option>
+                <option>Diploma / Polytechnic</option>
+                <option>Bachelor's Degree</option>
+                <option>Master's Degree</option>
+                <option>PhD / Doctorate</option>
+                <option>Bootcamp / Self-Taught</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Current Role</label>
+              <input type="text" placeholder="e.g. Software Engineer" id="f-role">
+            </div>
+          </div>
+          <div class="wizard-nav">
+            <div></div>
+            <button class="btn-accent" onclick="nextStep(2)">Continue →</button>
+          </div>
+        </div>
+
+        <!-- STEP 2: Experience -->
+        <div class="wizard-step" id="wizard-step-2">
+          <div class="step-title">Experience &amp; Skills</div>
+          <div class="step-subtitle">Your background helps our AI extract skill patterns and detect entropy signals</div>
+          <div class="form-grid full">
+            <div class="form-group">
+              <label>Work History Summary</label>
+              <textarea placeholder="Describe your professional journey, roles, key achievements, and technologies used. The more detail, the better our AI can analyze skill entropy..." id="f-history"></textarea>
+            </div>
+            <div class="form-group">
+              <label>Current Skills (comma separated)</label>
+              <input type="text" placeholder="e.g. Python, TensorFlow, AWS, Product Management" id="f-skills">
+            </div>
+            <div class="form-group">
+              <label>Primary Career Goal</label>
+              <select id="f-goal">
+                <option value="">Select your goal...</option>
+                <option>Get promoted in current field</option>
+                <option>Switch to an adjacent career</option>
+                <option>Pivot to a completely new field</option>
+                <option>Start my own venture</option>
+                <option>Migrate abroad for better opportunities</option>
+                <option>Return to workforce after a break</option>
+              </select>
+            </div>
+          </div>
+          <div class="wizard-nav">
+            <button class="btn-ghost"  onclick="nextStep(1)">← Back</button>
+            <button class="btn-accent" onclick="nextStep(3)">Continue →</button>
+          </div>
+        </div>
+
+        <!-- STEP 3: Preferences -->
+        <div class="wizard-step" id="wizard-step-3">
+          <div class="step-title">Preferences &amp; Accessibility</div>
+          <div class="step-subtitle">Help us match you to the most relevant scholarships, programs, and pathways</div>
+          <div class="form-grid" style="margin-bottom:1.5rem;">
+            <div class="form-group">
+              <label>Financial Status</label>
+              <select id="f-finance">
+                <option value="">Select...</option>
+                <option>Fully self-funded</option>
+                <option>Partially self-funded</option>
+                <option>Require financial aid</option>
+                <option>Require full scholarship</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Scholarship Requirement</label>
+              <select id="f-scholar">
+                <option value="">Select...</option>
+                <option>Not required</option>
+                <option>Merit-based scholarship</option>
+                <option>Need-based scholarship</option>
+                <option>Both merit &amp; need-based</option>
+                <option>Specially-abled scholarship</option>
+              </select>
+            </div>
+          </div>
+          <div class="toggle-row">
+            <div>
+              <div class="toggle-label">Willing to Study Abroad?</div>
+              <div class="toggle-sub">Unlocks global pathway recommendations</div>
+            </div>
+            <div class="toggle" id="toggle-abroad" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <div style="margin:1.2rem 0 0.6rem;">
+            <label style="font-size:0.82rem;font-weight:600;">Accessibility Requirements</label>
+            <div style="font-size:0.76rem;color:var(--muted);margin-bottom:0.8rem;">Select all that apply</div>
+          </div>
+          <div class="accessibility-options">
+            <label class="acc-option"><input type="checkbox"> Visual Impairment Support</label>
+            <label class="acc-option"><input type="checkbox"> Motor Impairment Accommodation</label>
+            <label class="acc-option"><input type="checkbox"> Hearing Impairment Support</label>
+            <label class="acc-option"><input type="checkbox"> Cognitive Accessibility Settings</label>
+            <label class="acc-option"><input type="checkbox"> Speech / Communication Aids</label>
+            <label class="acc-option"><input type="checkbox"> No specific requirements</label>
+          </div>
+          <div class="wizard-nav" style="margin-top:1.5rem;">
+            <button class="btn-ghost"  onclick="nextStep(2)">← Back</button>
+            <button class="btn-accent" onclick="nextStep(4)">Continue →</button>
+          </div>
+        </div>
+
+        <!-- STEP 4: Location -->
+        <div class="wizard-step" id="wizard-step-4">
+          <div class="step-title">Location &amp; Geospatial Matching</div>
+          <div class="step-subtitle">We use your location to match nearest career counselors and local opportunity clusters</div>
+          <div style="background:linear-gradient(135deg,rgba(37,99,235,0.06),rgba(20,184,166,0.06));border-radius:12px;padding:2rem;text-align:center;border:1.5px dashed var(--border);margin-bottom:1.5rem;">
+            <div style="font-size:2.5rem;margin-bottom:0.8rem;">📍</div>
+            <h3 style="margin-bottom:0.5rem;font-size:1rem;">Enable Location Access</h3>
+            <p style="color:var(--muted);font-size:0.85rem;margin-bottom:1.2rem;">Allow location permission to find nearest career counselors, local mentors, and geospatially-matched opportunities within your region.</p>
+            <button class="btn-accent" onclick="requestLocation()">📍 Allow Location Access</button>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>City / District</label>
+              <input type="text" placeholder="e.g. Bangalore" id="f-city">
+            </div>
+            <div class="form-group">
+              <label>State / Province</label>
+              <input type="text" placeholder="e.g. Karnataka" id="f-state">
+            </div>
+            <div class="form-group">
+              <label>Country</label>
+              <select id="f-country">
+                <option>India</option>
+                <option>United States</option>
+                <option>United Kingdom</option>
+                <option>Canada</option>
+                <option>Australia</option>
+                <option>Germany</option>
+                <option>Singapore</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Preferred Counseling Mode</label>
+              <select id="f-mode">
+                <option>Online (Video Call)</option>
+                <option>In-Person</option>
+                <option>Both</option>
+              </select>
+            </div>
+          </div>
+          <div style="background:rgba(20,184,166,0.08);border:1px solid rgba(20,184,166,0.2);border-radius:10px;padding:1rem;margin-top:1rem;">
+            <p style="font-size:0.8rem;color:var(--teal);font-weight:600;">🔒 Privacy Promise</p>
+            <p style="font-size:0.78rem;color:var(--muted);margin-top:0.2rem;">Your location data is used only for career matching. We never share precise coordinates. See our Privacy Policy.</p>
+          </div>
+          <div class="wizard-nav">
+            <button class="btn-ghost"  onclick="nextStep(3)">← Back</button>
+            <button class="btn-accent" onclick="submitAssessment()">🚀 Generate My Career Report</button>
+          </div>
+        </div>
+
+      </div><!-- /.wizard-card -->
+
+      <!-- Processing overlay -->
+      <div id="wizard-processing" style="display:none;text-align:center;padding:3rem;">
+        <div style="font-size:3rem;animation:spin 1s linear infinite;display:inline-block;">⚙️</div>
+        <h3 style="margin:1rem 0 0.5rem;font-family:'Syne',sans-serif;">Analyzing Your Profile...</h3>
+        <p style="color:var(--muted);font-size:0.88rem;">Our AI is running skill entropy analysis, career clustering, and scholarship matching. This takes about 3 seconds.</p>
+        <div style="margin-top:1.5rem;height:4px;background:var(--border);border-radius:100px;overflow:hidden;">
+          <div id="loading-bar" style="height:100%;background:linear-gradient(90deg,#2563EB,#14B8A6);width:0%;border-radius:100px;transition:width 2.5s ease;"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <footer><p>© 2025 <span>SkillSphere</span> — AI Career Evolution Platform</p></footer>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     PAGE: DASHBOARD
+══════════════════════════════════════════════════════ -->
+<div id="page-dashboard" class="page dashboard-page">
+
+  <div class="dashboard-header">
+    <div class="dash-header-inner">
+      <div class="dash-greeting">
+        <h2 id="dash-greeting-name">Welcome 👋</h2>
+        <p  id="dash-greeting-sub">Complete the assessment to generate your career report</p>
+      </div>
+      <div style="display:flex;gap:1rem;align-items:center;">
+        <div class="dash-score">
+          <div class="score-num" id="dash-health-score">—</div>
+          <div class="score-label">Career Health Score</div>
+        </div>
+        <div class="dash-score">
+          <div class="score-num" id="dash-entropy-level" style="color:#F59E0B;">—</div>
+          <div class="score-label">Entropy Level</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dashboard-body">
+
+    <!-- Skills Panel -->
+    <div class="dash-panel">
+      <div class="panel-title">🧠 Extracted Skills</div>
+      <div class="panel-subtitle">AI-parsed from your work history and profile</div>
+      <div class="skill-badges" id="dash-skills-container">
+        <span style="color:var(--muted);font-size:0.85rem;">No skills extracted yet. Complete the assessment.</span>
+      </div>
+    </div>
+
+    <!-- Entropy Panel -->
+    <div class="dash-panel">
+      <div class="panel-title">📊 Skill Entropy Meter</div>
+      <div class="panel-subtitle">Market relevance decay analysis across your skill set</div>
+      <div id="dash-entropy-container">
+        <span style="color:var(--muted);font-size:0.85rem;">No entropy data yet. Complete the assessment.</span>
+      </div>
+    </div>
+
+    <!-- Chart Panel -->
+    <div class="dash-panel dash-panel-full">
+      <div class="panel-title">📈 Skill Trajectory Forecast (12 Months)</div>
+      <div class="panel-subtitle">Predictive entropy projection based on AI adoption trends and market signals</div>
+      <div class="chart-wrap">
+        <canvas id="forecastChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Career Recommendations -->
+    <div class="dash-panel dash-panel-full">
+      <div class="panel-title">🔮 Adjacent Career Recommendations</div>
+      <div class="panel-subtitle">AI-identified pivot paths based on your skill overlap and market demand signals</div>
+      <div class="forecast-grid" id="dash-careers-container">
+        <div style="grid-column:1/-1;text-align:center;padding:2rem;color:var(--muted);font-size:0.88rem;">
+          No career recommendations yet. Complete the assessment to unlock your personalized pivot paths.
+        </div>
+      </div>
+    </div>
+
+    <!-- Geospatial / Counselors Panel -->
+    <div class="dash-panel dash-panel-full">
+      <div class="panel-title">📍 Nearest Career Counselors</div>
+      <div class="panel-subtitle">Geospatially matched mentors within your region — verified industry professionals</div>
+      <div class="map-placeholder" id="map-container">
+        <div id="leaflet-map"></div>
+        <div id="map-static-msg">
+          <div class="map-pins">
+            <div class="map-pin">📍</div>
+            <div class="map-pin">📍</div>
+            <div class="map-pin">📍</div>
+          </div>
+          <p style="color:var(--muted);font-size:0.85rem;">Interactive Map — Enable location in the wizard to activate</p>
+          <p style="font-size:0.78rem;color:var(--muted);margin-top:0.3rem;" id="map-location-label">3 counselors found within 15km of Bangalore, Karnataka</p>
+        </div>
+      </div>
+      <div class="counselor-cards" id="dash-counselors-container">
+        <div style="grid-column:1/-1;text-align:center;padding:1.5rem;color:var(--muted);font-size:0.85rem;">
+          Enable location in the wizard to find counselors near you.
+        </div>
+      </div>
+    </div>
+
+    <!-- Scholarships Panel -->
+    <div class="dash-panel dash-panel-full">
+      <div class="panel-title">🎓 Matched Scholarships</div>
+      <div class="panel-subtitle">Auto-matched based on your profile, eligibility, and career goals</div>
+      <div class="scholarship-list" id="dash-scholarships-container">
+        <div style="text-align:center;padding:2rem;color:var(--muted);font-size:0.88rem;">
+          No scholarships matched yet. Complete the assessment to unlock tailored opportunities.
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /.dashboard-body -->
+
+  <footer><p>© 2025 <span>SkillSphere</span> — AI Career Evolution Platform</p></footer>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     AUTH MODAL
+══════════════════════════════════════════════════════ -->
+<div class="auth-overlay" id="auth-overlay" onclick="handleOverlayClick(event)">
+  <div class="auth-modal">
+    <button class="auth-modal-close" onclick="closeAuth()">✕</button>
+    <div class="auth-modal-header">
+      <div class="auth-logo">Skill<span>Sphere</span></div>
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tab-signin" onclick="switchAuthTab('signin')">Sign In</button>
+        <button class="auth-tab"        id="tab-signup" onclick="switchAuthTab('signup')">Create Account</button>
+      </div>
+    </div>
+    <div class="auth-modal-body">
+
+      <!-- Sign In Panel -->
+      <div class="auth-panel active" id="panel-signin">
+        <h3 class="auth-title">Welcome back 👋</h3>
+        <p class="auth-subtitle">Sign in to access your career intelligence dashboard</p>
+        <div class="auth-form">
+          <div class="auth-input-wrap">
+            <span class="input-icon">✉️</span>
+            <input type="email" id="si-email" placeholder="Email address" autocomplete="email">
+          </div>
+          <div class="auth-input-wrap">
+            <span class="input-icon">🔒</span>
+            <input type="password" id="si-password" placeholder="Password" autocomplete="current-password">
+            <button class="pw-toggle" onclick="togglePw('si-password',this)" type="button">👁️</button>
+          </div>
+          <div class="auth-row">
+            <label class="auth-remember"><input type="checkbox" id="si-remember"> Remember me</label>
+            <a class="auth-forgot" onclick="showForgotPassword()">Forgot password?</a>
+          </div>
+          <button class="auth-submit" onclick="handleSignIn()">Sign In →</button>
+          <div class="auth-divider">or continue with</div>
+          <div class="social-btns">
+            <button class="social-btn" onclick="handleSocialAuth('Google')">  <span class="social-icon">🔴</span> Google</button>
+            <button class="social-btn" onclick="handleSocialAuth('LinkedIn')"><span class="social-icon">🔵</span> LinkedIn</button>
+            <button class="social-btn" onclick="handleSocialAuth('GitHub')">  <span class="social-icon">⚫</span> GitHub</button>
+          </div>
+        </div>
+        <div class="auth-switch">Don't have an account? <a onclick="switchAuthTab('signup')">Create one free →</a></div>
+      </div>
+
+      <!-- Sign Up Panel -->
+      <div class="auth-panel" id="panel-signup">
+        <h3 class="auth-title">Start your evolution 🚀</h3>
+        <p class="auth-subtitle">Create your free account and get your AI career report in minutes</p>
+        <div class="auth-form">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;">
+            <div class="auth-input-wrap"><span class="input-icon">👤</span><input type="text" id="su-firstname" placeholder="First name" autocomplete="given-name"></div>
+            <div class="auth-input-wrap"><span class="input-icon">👤</span><input type="text" id="su-lastname"  placeholder="Last name"  autocomplete="family-name"></div>
+          </div>
+          <div class="auth-input-wrap"><span class="input-icon">✉️</span><input type="email" id="su-email" placeholder="Email address" autocomplete="email"></div>
+          <div class="auth-input-wrap"><span class="input-icon">💼</span><input type="text" id="su-role" placeholder="Current role (e.g. Software Engineer)"></div>
+          <div class="auth-input-wrap">
+            <span class="input-icon">🔒</span>
+            <input type="password" id="su-password" placeholder="Create password" oninput="checkPasswordStrength(this.value)" autocomplete="new-password">
+            <button class="pw-toggle" onclick="togglePw('su-password',this)" type="button">👁️</button>
+          </div>
+          <div class="pw-strength">
+            <div class="pw-bar"><div class="pw-fill" id="pw-fill"></div></div>
+            <div class="pw-label" id="pw-label">Enter a password</div>
+          </div>
+          <div class="auth-input-wrap"><span class="input-icon">🔒</span><input type="password" id="su-confirm" placeholder="Confirm password" autocomplete="new-password"></div>
+          <button class="auth-submit" onclick="handleSignUp()">Create Free Account →</button>
+          <div class="auth-divider">or sign up with</div>
+          <div class="social-btns">
+            <button class="social-btn" onclick="handleSocialAuth('Google')">  <span class="social-icon">🔴</span> Google</button>
+            <button class="social-btn" onclick="handleSocialAuth('LinkedIn')"><span class="social-icon">🔵</span> LinkedIn</button>
+            <button class="social-btn" onclick="handleSocialAuth('GitHub')">  <span class="social-icon">⚫</span> GitHub</button>
+          </div>
+        </div>
+        <div class="auth-terms">By creating an account you agree to our <a>Terms of Service</a> and <a>Privacy Policy</a></div>
+        <div class="auth-switch">Already have an account? <a onclick="switchAuthTab('signin')">Sign in →</a></div>
+      </div>
+
+      <!-- Forgot Password Panel -->
+      <div class="auth-panel" id="panel-forgot">
+        <h3 class="auth-title">Reset password 🔑</h3>
+        <p class="auth-subtitle">Enter your email and we'll send you a reset link</p>
+        <div class="auth-form">
+          <div class="auth-input-wrap"><span class="input-icon">✉️</span><input type="email" id="fp-email" placeholder="Your email address"></div>
+          <button class="auth-submit" onclick="handleForgotPassword()">Send Reset Link →</button>
+        </div>
+        <div class="auth-switch"><a onclick="switchAuthTab('signin')">← Back to Sign In</a></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- TOAST NOTIFICATION -->
+<div class="toast" id="toast">
+  <span class="toast-icon" id="toast-icon">✅</span>
+  <span id="toast-msg">Success!</span>
+</div>
+
+<!-- CHATBOT WIDGET -->
+<div id="chatbot-widget" class="chatbot-widget collapsed">
+  <div class="chatbot-header" onclick="toggleChat()">
+    <span id="chat-title">💬 Career Assistant AI</span>
+    <span id="chat-toggle-icon">▲</span>
+  </div>
+  <div class="chatbot-body" id="chatbot-body">
+    <div class="chat-message bot">Hello! 👋 I am your AI Career Assistant. How can I help you today?</div>
+  </div>
+  <div class="chatbot-footer">
+    <input type="text" id="chat-input" placeholder="Type a message..." onkeypress="handleChatKeyPress(event)">
+    <button onclick="sendChatMessage()">Send</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     JAVASCRIPT — load order matters:
+       1. state.js    — global variables (no deps)
+       2. helpers.js  — utilities (no deps)
+       3. neural.js   — canvas animation (no deps)
+       4. nav.js      — routing (needs dashboard.js → load after)
+       5. map.js      — leaflet logic (needs state, helpers, dashboard)
+       6. dashboard.js — render functions + chart (needs state, helpers, map)
+       7. wizard.js   — form logic (needs state, helpers, nav, dashboard)
+       8. auth.js     — auth modal (needs state, helpers, nav)
+       9. chatbot.js  — chat widget (needs state)
+══════════════════════════════════════════════════════ -->
+<script src="js/state.js"></script>
+<script src="js/helpers.js"></script>
+<script src="js/neural.js"></script>
+<script src="js/dashboard.js"></script>
+<script src="js/map.js"></script>
+<script src="js/nav.js"></script>
+<script src="js/wizard.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/chatbot.js"></script>
+
+<!-- Bootstrap: runs after all scripts are loaded -->
+<script>
+window.addEventListener('DOMContentLoaded', () => {
+  initNeural();
+
+  // Scroll-triggered fade-in animations for marketing sections
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.style.animationPlayState = 'running';
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.problem-card, .value-block, .incl-card').forEach(el => {
+    el.style.animationPlayState = 'paused';
+    el.style.animation          = 'fadeUp 0.6s ease both';
+    observer.observe(el);
+  });
+});
+</script>
+
+</body>
+</html>

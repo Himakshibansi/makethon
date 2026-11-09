@@ -1,0 +1,121 @@
+/* ═══════════════════════════════════════════
+   wizard.css — Assessment wizard & forms
+   ═══════════════════════════════════════════ */
+
+.wizard-section { background: var(--bg); padding: 6rem 2rem; }
+
+.wizard-container { max-width: 760px; margin: 0 auto; }
+
+.wizard-header { text-align: center; margin-bottom: 2.5rem; }
+
+.progress-bar-wrap {
+  display: flex; gap: 0; margin-bottom: 2.5rem;
+  background: var(--border); border-radius: 100px; overflow: hidden;
+  height: 6px;
+}
+.progress-fill {
+  background: linear-gradient(90deg, var(--accent), var(--teal));
+  height: 100%; border-radius: 100px;
+  transition: width 0.5s ease;
+}
+
+.step-indicators {
+  display: flex; justify-content: space-between;
+  margin-bottom: 2rem;
+}
+.step-dot {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-size: 0.82rem; font-weight: 600; color: var(--muted);
+}
+.step-dot .dot {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.75rem; font-weight: 700; color: var(--muted);
+  transition: all 0.3s;
+}
+.step-dot.active .dot { background: var(--accent); color: white; }
+.step-dot.done .dot   { background: var(--teal);   color: white; }
+
+.wizard-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 20px; padding: 2.5rem;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+}
+.wizard-step        { display: none; }
+.wizard-step.active { display: block; animation: fadeUp 0.4s ease; }
+
+.step-title    { font-family: 'Syne', sans-serif; font-size: 1.3rem; font-weight: 700; margin-bottom: 0.3rem; }
+.step-subtitle { color: var(--muted); font-size: 0.88rem; margin-bottom: 2rem; }
+
+/* Forms */
+.form-grid      { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+.form-grid.full { grid-template-columns: 1fr; }
+
+.form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+.form-group label { font-size: 0.82rem; font-weight: 600; color: var(--text); }
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  padding: 0.7rem 1rem;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.88rem;
+  color: var(--text);
+  transition: border-color 0.2s;
+  outline: none;
+  background: var(--bg);
+}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+}
+.form-group textarea { resize: vertical; min-height: 100px; }
+
+.wizard-nav {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: 2rem;
+}
+
+/* Accessibility toggles */
+.accessibility-options {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.8rem;
+}
+.acc-option {
+  display: flex; align-items: center; gap: 0.7rem;
+  padding: 0.8rem 1rem;
+  border: 1.5px solid var(--border); border-radius: 10px;
+  cursor: pointer; transition: all 0.2s;
+  font-size: 0.85rem;
+}
+.acc-option input { accent-color: var(--accent); }
+.acc-option:hover { border-color: var(--accent); background: rgba(37,99,235,0.04); }
+
+.toggle-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1rem;
+  border: 1.5px solid var(--border); border-radius: 10px;
+  margin-bottom: 0.8rem;
+}
+.toggle-label { font-size: 0.88rem; font-weight: 500; }
+.toggle-sub   { font-size: 0.76rem; color: var(--muted); }
+
+.toggle {
+  width: 42px; height: 22px;
+  background: var(--border); border-radius: 100px;
+  position: relative; cursor: pointer; transition: background 0.2s;
+}
+.toggle.on { background: var(--accent); }
+.toggle::after {
+  content: ''; position: absolute;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: white; top: 3px; left: 3px;
+  transition: left 0.2s;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+.toggle.on::after { left: 23px; }

@@ -1,0 +1,96 @@
+/* ═══════════════════════════════════════════
+   chatbot.css — Chatbot widget
+   ═══════════════════════════════════════════ */
+
+.chatbot-widget {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 350px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+  z-index: 3000;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+.chatbot-widget.collapsed {
+  width: auto;
+  border-radius: 100px;
+}
+.chatbot-widget.collapsed .chatbot-body,
+.chatbot-widget.collapsed .chatbot-footer {
+  display: none;
+}
+
+.chatbot-header {
+  background: linear-gradient(135deg, var(--accent), var(--teal));
+  color: white;
+  padding: 1rem 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.chatbot-body {
+  height: 320px;
+  padding: 1rem;
+  overflow-y: auto;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.chat-message {
+  max-width: 85%;
+  padding: 0.7rem 1rem;
+  border-radius: 12px;
+  font-size: 0.88rem;
+  line-height: 1.4;
+}
+.chat-message.bot {
+  background: white;
+  color: var(--text);
+  border: 1px solid var(--border);
+  align-self: flex-start;
+  border-bottom-left-radius: 4px;
+}
+.chat-message.user {
+  background: var(--teal);
+  color: white;
+  align-self: flex-end;
+  border-bottom-right-radius: 4px;
+}
+
+.chatbot-footer {
+  display: flex;
+  padding: 0.8rem;
+  background: white;
+  border-top: 1px solid var(--border);
+}
+.chatbot-footer input {
+  flex: 1;
+  border: 1.5px solid var(--border);
+  padding: 0.6rem 1rem;
+  border-radius: 20px;
+  outline: none;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.88rem;
+  transition: border-color 0.2s;
+}
+.chatbot-footer input:focus { border-color: var(--accent); }
+.chatbot-footer button {
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-weight: 700;
+  margin-left: 0.8rem;
+  cursor: pointer;
+  padding: 0 0.5rem;
+}
